@@ -1,0 +1,1252 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cinema Prompt Builder</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+:root{
+  --bg:#fefefe;
+  --surface:#fefefe;
+  --surface2:#1a1714;
+  --surface3:#484437;
+  --line:#2e2519;
+  --line2:#3c3024;
+  --text:#776b5b;
+  --text2:#e4d6c9;
+  --text3:#5e4e3c;
+  --accent:#c9a24a;
+  --accent-dim:rgba(201,162,74,0.08);
+  --accent-dim2:rgba(201,162,74,0.16);
+  --blue:#7aa4c6;
+  --blue-dim:rgba(122,164,198,0.10);
+  --green:#84b47c;
+  --green-dim:rgba(132,180,124,0.10);
+  --purple:#c0a4c0;
+  --purple-dim:rgba(192,164,192,0.10);
+  --red:#c4745e;
+  --red-dim:rgba(196,116,94,0.08);
+  --seed:#7aa4c6;
+  --seed-dim:rgba(122,164,198,0.10);
+  --r:3px;
+  --ease:cubic-bezier(0.16,1,0.3,1);
+  --spring:cubic-bezier(0.34,1.56,0.64,1);
+  --mono:'IBM Plex Mono','Fira Code','Consolas',monospace;
+  --display:'Cormorant Garamond',Georgia,serif;
+  --sans:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+@media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--text);
+  font-family:var(--sans);
+  font-size:13px;line-height:1.5;min-height:100vh;
+  -webkit-font-smoothing:antialiased;
+}
+body::after{
+  content:'';
+  position:fixed;inset:0;
+  pointer-events:none;z-index:9999;
+  opacity:0.022;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-repeat:repeat;
+  background-size:200px 200px;
+}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--text3)}
+
+/* ─── Header ─── */
+header{
+  /*position:sticky;*/top:0;z-index:30;
+  background:rgba(13,11,9,0.3);
+  backdrop-filter:blur(20px) saturate(1.4);
+  padding:0 24px;height:60px;
+  display:flex;align-items:center;gap:12px;
+}
+
+.logo-mark span:nth-child(1){height:14px}
+.logo-mark span:nth-child(2){height:22px}
+.logo-mark span:nth-child(3){height:17px}
+.logo-mark span:nth-child(4){height:10px}
+.logo-mark span:nth-child(5){height:26px}
+.logo-icon{display:none}
+.logo-name{
+  font-family:var(--display);
+  font-size:32px;font-weight:600;font-style:italic;
+  color:var(--text);letter-spacing:-0.01em;
+}
+.logo-sub{font-size:16px;color:var(--text3);font-weight:300;letter-spacing:0.01em}
+.hd-sep{width:1px;height:18px;background:var(--line2);margin:0 2px}
+.hd-pill{
+  font-size:16px;font-weight:500;letter-spacing:.08em;
+  padding:3px 8px;border-radius:2px;
+  background:transparent;color:var(--text3);
+  border:1px solid var(--line2);
+  font-family:var(--mono);text-transform:uppercase;
+}
+.header-right{margin-left:auto;display:flex;gap:6px;align-items:center}
+
+/* ─── Layout ─── */
+.app{display:grid;grid-template-columns:1fr 460px;min-height:calc(100vh - 48px)}
+.left{padding:24px 28px 80px;border-right:1px solid var(--line);overflow-y:auto}
+.right{
+  display:flex;flex-direction:column;gap:0;
+  position:sticky;top:48px;
+  height:calc(100vh - 48px);
+  background:var(--surface);
+  overflow:hidden;
+}
+
+/* ─── Stats ─── */
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
+.stat{
+  background:transparent;border:1px solid var(--line);
+  border-radius:var(--r);padding:10px 12px;
+  transition:border-color .2s var(--ease);cursor:default;
+}
+.stat.lit{border-color:rgba(201,162,74,0.35);background:var(--accent-dim)}
+.stat-l{
+  font-size:16px;color:var(--text3);font-weight:500;
+  letter-spacing:.12em;text-transform:uppercase;margin-bottom:5px;
+}
+.stat-v{
+  font-size:16px;color:var(--accent);font-weight:500;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+}
+
+/* ─── Field ─── */
+.field{margin-bottom:20px}
+.field-label{
+  font-size:16px;font-weight:500;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;margin-bottom:7px;
+  font-family:var(--mono);
+}
+.text-input{
+  width:100%;background:transparent;border:1px solid var(--line2);
+  border-radius:var(--r);padding:9px 13px;
+  color:var(--text);font-size:13px;font-family:var(--sans);outline:none;
+  transition:border-color .15s,box-shadow .15s;
+}
+.text-input:focus{border-color:rgba(201,162,74,0.45);box-shadow:0 0 0 3px rgba(201,162,74,0.06)}
+.text-input::placeholder{color:var(--text3)}
+
+/* ─── Tabs ─── */
+.tabs{
+  display:flex;gap:0;margin-bottom:24px;
+  border-bottom:1px solid var(--line);
+}
+.tab{
+  padding:8px 16px;font-size:16px;font-weight:400;
+  color:var(--text3);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .14s,border-color .14s;
+  background:none;border-top:none;border-left:none;border-right:none;
+  font-family:var(--sans);white-space:nowrap;text-align:center;
+  letter-spacing:.02em;
+}
+.tab:hover{color:var(--text2)}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:500}
+.tab-pane{display:none}
+.tab-pane.active{display:block;animation:fadeUp .15s var(--ease)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+
+/* ─── Section ─── */
+.section{margin-bottom:20px}
+.sec-label{
+  font-family:var(--display);
+  font-size:13px;font-style:italic;font-weight:500;
+  color:var(--text3);letter-spacing:.02em;
+  margin-bottom:10px;
+  display:flex;align-items:center;gap:10px;
+}
+.sec-label::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(to right,var(--line2),transparent);
+}
+
+/* ─── Chips ─── */
+.chips{display:flex;flex-wrap:wrap;gap:5px}
+.chip{
+  padding:5px 11px;border:1px solid var(--line2);border-radius:2px;
+  background:transparent;color:var(--text3);
+  cursor:pointer;font-size:16px;font-weight:400;font-family:var(--sans);
+  transition:all .13s var(--ease);user-select:none;white-space:nowrap;
+  letter-spacing:.01em;
+}
+.chip:hover{border-color:var(--line2);color:var(--text2);background:var(--surface3);transform:translateY(-1px)}
+.chip:active{transform:scale(.96);transition-duration:.07s}
+.chip.on{
+  background:var(--accent-dim2);border-color:rgba(201,162,74,0.5);
+  color:var(--accent);font-weight:500;
+}
+.chip.grid-chip{border-radius:2px}
+.chip.dir.on{
+  background:rgba(192,164,192,0.12);border-color:rgba(192,164,192,0.45);
+  color:var(--purple);
+}
+
+/* ─── Notice ─── */
+.notice{
+  background:transparent;border:1px solid var(--line);
+  border-left:2px solid var(--accent);
+  border-radius:var(--r);padding:10px 14px;
+  font-size:16px;color:var(--text3);line-height:1.7;margin-bottom:20px;
+}
+.notice strong{color:var(--accent);font-weight:500}
+
+/* ─── Timeline ─── */
+.tl-box{background:transparent;border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-bottom:10px}
+.tl-row{display:grid;grid-template-columns:68px 1fr 26px;gap:6px;margin-bottom:8px;align-items:start}
+.tl-in{
+  background:var(--surface2);border:1px solid var(--line);
+  border-radius:2px;padding:7px 10px;
+  color:var(--text);font-size:16px;font-family:var(--sans);outline:none;width:100%;
+  transition:border-color .13s;
+}
+.tl-in:focus{border-color:rgba(201,162,74,0.4)}
+.tl-in::placeholder{color:var(--text3)}
+textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
+.tl-del{
+  width:26px;height:26px;border-radius:2px;
+  border:none;background:none;color:var(--text3);
+  cursor:pointer;font-size:13px;display:flex;align-items:center;
+  justify-content:center;margin-top:6px;flex-shrink:0;
+  transition:background .12s,color .12s;
+}
+.tl-del:hover{background:var(--red-dim);color:var(--red)}
+.tl-actions{display:flex;gap:7px;margin-bottom:16px}
+.ghost-btn{
+  padding:5px 12px;border:1px solid var(--line2);border-radius:2px;
+  background:none;color:var(--text3);font-size:16px;font-weight:400;
+  cursor:pointer;font-family:var(--sans);
+  transition:border-color .13s,color .13s,background .13s;
+  letter-spacing:.01em;
+}
+.ghost-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+
+/* ─── Right Panel ─── */
+.right-tabs{
+  display:flex;gap:0;border-bottom:1px solid var(--line);
+  background:var(--surface);flex-shrink:0;
+}
+.rtab{
+  padding:10px 18px;font-size:16px;font-weight:400;
+  color:var(--text3);cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .13s,border-color .13s;
+  background:none;border-top:none;border-left:none;border-right:none;
+  font-family:var(--sans);white-space:nowrap;letter-spacing:.01em;
+}
+.rtab:hover{color:var(--text2)}
+.rtab.active{color:var(--text);border-bottom-color:var(--accent)}
+.rtab-pane{display:none;flex:1;flex-direction:column;overflow:hidden}
+.rtab-pane.active{display:flex}
+
+/* ─── Output ─── */
+.out-wrap{
+  display:flex;flex-direction:column;
+  flex:1;overflow:hidden;
+}
+.out-header{
+  padding:9px 14px;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;
+}
+.out-label{font-size:16px;font-weight:500;color:var(--text3);letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono)}
+.out-badge{
+  font-size:16px;font-weight:500;padding:2px 8px;
+  border-radius:2px;letter-spacing:.06em;font-family:var(--mono);
+}
+.badge-nano{background:rgba(132,180,124,0.10);color:var(--green);border:1px solid rgba(132,180,124,0.25)}
+.badge-gpt{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(201,162,74,0.25)}
+.badge-seed{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(122,164,198,0.25)}
+.out-body{
+  flex:1;padding:16px;
+  font-family:var(--mono);font-size:16px;line-height:1.9;
+  color:var(--text);
+  overflow-y:auto;
+  white-space:pre-wrap;word-break:break-word;
+  scrollbar-width:thin;
+  scrollbar-color:var(--line2) transparent;
+  min-height:0;
+  resize:none;border:none;outline:none;background:transparent;
+  width:100%;
+}
+.out-body::placeholder{
+  font-family:var(--mono);font-style:italic;color:var(--text3);font-size:16px;
+  line-height:1.8;
+}
+.out-footer{
+  padding:8px 12px;border-top:1px solid var(--line);
+  display:flex;gap:6px;align-items:center;
+  background:transparent;flex-shrink:0;
+}
+.act-btn{
+  padding:5px 13px;border-radius:2px;font-size:11px;font-weight:500;
+  cursor:pointer;font-family:var(--sans);border:1px solid transparent;
+  transition:all .13s var(--ease);letter-spacing:.04em;text-transform:uppercase;
+}
+.act-btn:active{transform:scale(.95)}
+.ab-ghost{background:none;border-color:var(--line2);color:var(--text3)}
+.ab-ghost:hover{border-color:var(--text2);color:var(--text)}
+.ab-gold{background:var(--accent-dim2);border-color:rgba(201,162,74,0.45);color:var(--accent)}
+.ab-gold:hover{background:rgba(201,162,74,0.24)}
+.ab-blue{background:rgba(122,164,198,0.10);border-color:rgba(122,164,198,0.35);color:var(--blue)}
+.ab-blue:hover{background:rgba(122,164,198,0.2)}
+.ab-green{background:rgba(132,180,124,0.10);border-color:rgba(132,180,124,0.35);color:var(--green)}
+.ab-green:hover{background:rgba(132,180,124,0.2)}
+.ab-red{background:var(--red-dim);border-color:rgba(196,116,94,0.25);color:var(--red)}
+.ab-red:hover{background:rgba(196,116,94,0.18)}
+.spacer{flex:1}
+
+/* Divider */
+.out-divider{height:1px;background:var(--line);flex-shrink:0}
+
+/* ─── Saved / Presets panel ─── */
+.side-panel{
+  flex:1;overflow-y:auto;padding:16px;
+  display:flex;flex-direction:column;gap:14px;
+}
+.panel-block{background:transparent;border:1px solid var(--line);border-radius:var(--r)}
+.pblock-head{
+  padding:8px 12px;border-bottom:1px solid var(--line);
+  font-size:16px;font-weight:500;color:var(--text3);
+  letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);
+}
+.pblock-body{padding:10px 12px}
+.save-row{display:flex;gap:6px}
+.save-input{
+  flex:1;background:transparent;border:1px solid var(--line2);
+  border-radius:2px;padding:6px 12px;
+  color:var(--text);font-size:16px;font-family:var(--sans);outline:none;
+  transition:border-color .13s;
+}
+.save-input:focus{border-color:rgba(201,162,74,0.45)}
+.save-input::placeholder{color:var(--text3)}
+.saved-list{margin-top:8px;display:flex;flex-direction:column;gap:2px}
+@keyframes si-in{from{opacity:0;transform:translateX(-4px)}to{opacity:1}}
+.si{
+  display:flex;align-items:center;gap:7px;
+  padding:6px 8px;border-radius:2px;
+  transition:background .12s;
+  animation:si-in .15s var(--ease);
+}
+.si:hover{background:var(--surface3)}
+.si-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.4;flex-shrink:0}
+.si-name{flex:1;font-size:16px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si-load{
+  font-size:16px;font-weight:500;padding:2px 8px;
+  border-radius:2px;border:1px solid var(--line2);
+  background:none;color:var(--text3);cursor:pointer;font-family:var(--sans);
+  transition:all .12s;letter-spacing:.04em;text-transform:uppercase;
+}
+.si-load:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.si-del{
+  width:20px;height:20px;border-radius:2px;
+  border:none;background:none;color:var(--text3);
+  cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
+  transition:background .12s,color .12s;
+}
+.si-del:hover{background:var(--red-dim);color:var(--red)}
+.saved-empty{font-size:16px;color:var(--text3);font-style:italic;padding:2px 0}
+.preset-list{display:flex;flex-direction:column;gap:3px}
+.pset{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 12px;border-radius:2px;
+  background:transparent;border:1px solid transparent;
+  color:var(--text3);font-size:16px;font-weight:400;
+  cursor:pointer;font-family:var(--sans);text-align:left;
+  transition:all .13s var(--ease);letter-spacing:.01em;
+}
+.pset:hover{background:var(--accent-dim);border-color:rgba(201,162,74,0.2);color:var(--accent);transform:translateX(2px)}
+.pset:active{transform:scale(.98)}
+.pset.reset:hover{background:var(--red-dim);border-color:rgba(196,116,94,0.2);color:var(--red)}
+.ptag{
+  font-size:16px;font-weight:500;padding:2px 6px;border-radius:1px;
+  background:transparent;color:var(--text3);
+  border:1px solid var(--line2);flex-shrink:0;
+  font-family:var(--mono);letter-spacing:.05em;text-transform:uppercase;
+}
+
+/* ─── Toast ─── */
+.toast{
+  position:fixed;bottom:20px;left:50%;z-index:100;
+  transform:translateX(-50%) translateY(10px);
+  background:var(--surface3);color:var(--text);
+  border:1px solid var(--line2);
+  padding:7px 16px;border-radius:2px;
+  font-size:16px;font-weight:400;
+  pointer-events:none;opacity:0;
+  transition:opacity .18s var(--ease),transform .18s var(--ease);
+  box-shadow:0 8px 32px rgba(0,0,0,.6);
+  white-space:nowrap;font-family:var(--sans);letter-spacing:.02em;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-mark" aria-hidden="true"><span></span><span></span><span></span><span></span><span></span></div>
+  <a class="logo-name" href="https://github.com/tsaichialin/CinePrompt" target="_blank" rel="noopener" style="text-decoration:none;color:inherit">CinePrompt</a>
+  <div class="hd-sep"></div>
+  <span class="logo-sub">AI prompt generator for Nano Banana Pro/2, GPT Image-2, and Seedance 2.0</span>
+</header>
+
+<div class="app">
+<!-- ═══ LEFT ═══ -->
+<div class="left">
+
+  <div class="stats">
+    <div class="stat" id="st-scene"><div class="stat-l">場景 Scene</div><div class="stat-v" id="sv-scene">—</div></div>
+    <div class="stat" id="st-camera"><div class="stat-l">攝影機 Camera</div><div class="stat-v" id="sv-camera">—</div></div>
+    <div class="stat" id="st-lens"><div class="stat-l">鏡頭 Lens</div><div class="stat-v" id="sv-lens">—</div></div>
+    <div class="stat" id="st-focal"><div class="stat-l">焦段 Focal</div><div class="stat-v" id="sv-focal">—</div></div>
+    <div class="stat" id="st-grid"><div class="stat-l">格式 Grid</div><div class="stat-v" id="sv-grid">1×1</div></div>
+  </div>
+
+  <div class="field">
+    <div class="field-label">主體描述 Subject Description</div>
+    <input class="text-input" id="subject" type="text" placeholder="e.g. a woman walking through rain-soaked alley at night..." />
+  </div>
+
+  <div class="field">
+    <div class="field-label" style="display:flex;justify-content:space-between;align-items:center">
+      <span>自由補充 Extra Notes</span>
+      <span style="color:var(--text3);font-size:16px;font-weight:400;text-transform:none;letter-spacing:0;margin-left:8px">追加到所有 prompt 末尾 / Appended to all prompts</span>
+    </div>
+    <textarea class="text-input" id="extra" rows="2" placeholder="e.g. no people in background, shot in Tokyo, 1990s aesthetic, 35mm film grain..." style="resize:vertical;line-height:1.5;min-height:52px;font-family:inherit"></textarea>
+  </div>
+
+  <div class="tabs" id="tab-bar">
+    <button class="tab active" onclick="switchTab('visual',this)">視覺 Visual</button>
+    <button class="tab" onclick="switchTab('shot',this)">景別 Shot</button>
+    <button class="tab" onclick="switchTab('director',this)">導演 Director</button>
+    <button class="tab" onclick="switchTab('timeline',this)">時間碼 Timeline</button>
+  </div>
+
+  <!-- Visual -->
+  <div class="tab-pane active" id="pane-visual">
+    <div class="section"><div class="sec-label">場景類型 Scene Type</div><div class="chips" id="g-scene"></div></div>
+    <div class="section"><div class="sec-label">攝影機 / 色彩科學 Camera / Color Science</div><div class="chips" id="g-camera"></div></div>
+    <div class="section"><div class="sec-label">鏡頭特性 Lens Character</div><div class="chips" id="g-lens"></div></div>
+    <div class="section"><div class="sec-label">焦段 Focal Length</div><div class="chips" id="g-focal"></div></div>
+    <div class="section"><div class="sec-label">光圈景深 Aperture / DoF</div><div class="chips" id="g-aperture"></div></div>
+    <div class="section"><div class="sec-label">色調風格 Color Grade / LUT</div><div class="chips" id="g-lut"></div></div>
+    <div class="section"><div class="sec-label">燈光 Lighting</div><div class="chips" id="g-light"></div></div>
+
+    <div class="section">
+      <div class="sec-label">輸出格式 Grid Layout</div>
+      <div class="chips" id="g-grid"></div>
+      <div id="grid-note" style="display:none;margin-top:8px;font-size:11px;color:var(--text3);line-height:1.6;padding:8px 10px;background:var(--surface3);border-radius:2px;border-left:2px solid var(--accent)"></div>
+    </div>
+  </div>
+
+  <!-- Shot -->
+  <div class="tab-pane" id="pane-shot">
+    <div class="section"><div class="sec-label">景別尺寸 Shot Size</div><div class="chips" id="g-shotsize"></div></div>
+    <div class="section"><div class="sec-label">關係構圖 Relationship Shot</div><div class="chips" id="g-relation"></div></div>
+    <div class="section"><div class="sec-label">攝影機角度 Camera Angle</div><div class="chips" id="g-angle"></div></div>
+    <div class="section"><div class="sec-label">攝影機運動 Camera Movement</div><div class="chips" id="g-motion"></div></div>
+    <div class="section"><div class="sec-label">速度修飾 Speed Modifier</div><div class="chips" id="g-speed"></div></div>
+  </div>
+
+  <!-- Director -->
+  <div class="tab-pane" id="pane-director">
+    <div class="notice"><strong>導演風格模式 Director Style：</strong>套用完整視覺語言（鏡頭 Lens ／色彩 Color ／運動 Movement），建議單獨使用。</div>
+    <div class="section"><div class="sec-label">選擇導演 Select Director</div><div class="chips" id="g-director"></div></div>
+  </div>
+
+  <!-- Timeline -->
+  <div class="tab-pane" id="pane-timeline">
+    <div class="notice"><strong>時間碼多鏡頭 Time-coded Multi-shot：</strong>在單次 15s 生成中導演個別鏡頭。結果輸出到 Seedance 2.0。<br>每段：景別 Shot ＋ 動作 Action ＋ 燈光 Lighting。轉場用 "hard cut to" 或 "seamless morph into"。</div>
+    <div class="tl-box" id="tl-area"><div style="font-size:16px;color:var(--text3);padding:2px 0">尚無鏡頭段 / No shots yet — add below</div></div>
+    <div class="tl-actions">
+      <button class="ghost-btn" onclick="addShot()">＋ 新增鏡頭段 Add Shot</button>
+      <button class="ghost-btn" onclick="clearTL()">清除 Clear All</button>
+    </div>
+    <div class="section">
+      <div class="sec-label">15秒模板 15s Templates</div>
+      <div class="chips">
+        <button class="chip" onclick="applyTLT('climax')">高潮弧線 Climax Arc</button>
+        <button class="chip" onclick="applyTLT('product')">產品廣告 Product Ad</button>
+        <button class="chip" onclick="applyTLT('action')">動作序列 Action</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .left -->
+
+<!-- ═══ RIGHT ═══ -->
+<div class="right">
+
+  <!-- Right Tab Bar -->
+  <div class="right-tabs">
+    <button class="rtab active" onclick="switchRTab('image',this)">圖像 Image</button>
+    <button class="rtab" onclick="switchRTab('video',this)">影片 Video</button>
+    <button class="rtab" onclick="switchRTab('saved',this)">收藏 Saved</button>
+  </div>
+
+  <!-- Image Tab -->
+  <div class="rtab-pane active" id="rpane-image">
+    <!-- Nano Banana -->
+    <div class="out-wrap" style="flex:1;min-height:0;border-bottom:1px solid var(--line)">
+      <div class="out-header">
+        <span class="out-label">Nano Banana 2</span>
+        <span class="out-badge badge-nano" title="動詞開頭 · 對話式自然語言 · 正向描述">對話式 Conversational</span>
+      </div>
+      <textarea class="out-body" id="out-nano" spellcheck="false" placeholder="Nano Banana Pro / 2 prompt — verb-first conversational style.
+E.g. Photograph a woman in a rain-soaked Tokyo alley at night, using 35mm prime lens with golden hour rim light, Fujifilm Eterna color science. Photorealistic, natural rendering."></textarea>
+      <div class="out-footer">
+        <button class="act-btn ab-ghost" onclick="doCopy('nano')">Copy</button>
+        <button class="act-btn ab-red" onclick="clearOut('nano')">Clear</button>
+        <div class="spacer"></div>
+        <button class="act-btn ab-green" onclick="doDownload('nano')">Download ↓</button>
+      </div>
+    </div>
+    <!-- GPT Image-2 -->
+    <div class="out-wrap" style="flex:1;min-height:0">
+      <div class="out-header">
+        <span class="out-label">GPT Image-2</span>
+        <span class="out-badge badge-gpt" title="段落結構 · Scene→Subject→Details→Constraints">結構式 Structured</span>
+      </div>
+      <textarea class="out-body" id="out-gpt" spellcheck="false" placeholder="GPT Image-2 prompt — structured brief, Scene→Subject→Details→Lighting→Constraints.
+E.g. Street scene in narrow Tokyo alley at night.
+A woman walking alone, wet pavement reflecting neon signs.
+35mm prime lens, shallow depth of field, golden rim light, Fujifilm Eterna color science.
+Ultra-realistic, sharp clarity, no watermark."></textarea>
+      <div class="out-footer">
+        <button class="act-btn ab-ghost" onclick="doCopy('gpt')">Copy</button>
+        <button class="act-btn ab-red" onclick="clearOut('gpt')">Clear</button>
+        <div class="spacer"></div>
+        <button class="act-btn ab-gold" onclick="doDownload('gpt')">Download ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Video Tab -->
+  <div class="rtab-pane" id="rpane-video">
+    <div class="out-wrap" style="flex:1;min-height:0">
+      <div class="out-header">
+        <span class="out-label">Seedance 2.0</span>
+        <span class="out-badge badge-seed">影片生成 Video</span>
+      </div>
+      <textarea class="out-body" id="out-seed" spellcheck="false" placeholder="Seedance 2.0 prompt will appear here — or type / paste directly..."></textarea>
+      <div class="out-footer">
+        <button class="act-btn ab-ghost" onclick="doCopy('seed')">Copy</button>
+        <button class="act-btn ab-red" onclick="clearOut('seed')">Clear</button>
+        <div class="spacer"></div>
+        <button class="act-btn ab-blue" onclick="doDownload('seed')">Download ↓</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Saved Tab -->
+  <div class="rtab-pane" id="rpane-saved">
+    <div class="side-panel">
+      <!-- Save form -->
+      <div class="panel-block">
+        <div class="pblock-head">收藏組合 Saved Presets</div>
+        <div class="pblock-body">
+          <div class="save-row">
+            <input class="save-input" id="save-name" placeholder="命名組合 Name preset..." />
+            <input type="hidden" id="save-which" value="all">
+            <button class="act-btn ab-gold" onclick="doSave()">Save</button>
+          </div>
+          <div class="saved-list" id="saved-list"></div>
+        </div>
+      </div>
+      <!-- Quick presets -->
+      <div class="panel-block">
+        <div class="pblock-head">快速預設 Quick Presets</div>
+        <div class="pblock-body">
+          <div class="preset-list">
+            <button class="pset" onclick="applyPreset('portrait')">人像 Portrait <span class="ptag">ARRI · 85mm · f/2.8</span></button>
+            <button class="pset" onclick="applyPreset('street')">街拍 Street <span class="ptag">Fuji · 35mm · Overcast</span></button>
+            <button class="pset" onclick="applyPreset('noir')">黑色電影 Noir <span class="ptag">ARRI Flex · 50mm</span></button>
+            <button class="pset" onclick="applyPreset('epic')">史詩廣角 Epic <span class="ptag">IMAX · 18mm · Volumetric</span></button>
+            <button class="pset" onclick="applyPreset('fuji')">富士冷調 Fuji Cool <span class="ptag">Eterna · 35mm</span></button>
+            <button class="pset" onclick="applyPreset('wkw')">王家衛 Wong Kar-wai <span class="ptag">Director</span></button>
+            <button class="pset reset" onclick="doClear()">清除全部 Clear All <span class="ptag">Reset</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- .right -->
+</div><!-- .app -->
+<div class="toast" id="toast"></div>
+
+<script>
+const DB={
+  scene:[
+    {l:'人像 Portrait',v:'portrait',nano:'intimate portrait photography, editorial style',gpt:'intimate portrait photography',seed:'portrait subject'},
+    {l:'街拍 Street',v:'street',nano:'street photography, candid moment',gpt:'street photography',seed:'walking through urban environment'},
+    {l:'電影場景 Cinematic',v:'cinematic',nano:'cinematic scene, film still',gpt:'cinematic scene',seed:'cinematic sequence'},
+    {l:'風景 Landscape',v:'landscape',nano:'landscape photography, natural environment',gpt:'landscape photography',seed:'landscape establishing shot'},
+    {l:'動作 Action',v:'action',nano:'dynamic action shot, motion energy',gpt:'dynamic action shot',seed:'dynamic action sequence'},
+    {l:'產品 Product',v:'product',nano:'luxury product commercial, studio photography',gpt:'luxury product commercial photography',seed:'product hero shot'},
+    {l:'紀錄 Documentary',v:'doc',nano:'documentary photography, observational style',gpt:'documentary photography style',seed:'documentary observational scene'},
+    {l:'2D 動畫 2D Animation',v:'anim2d',nano:'Create a 2D animated scene',gpt:'2D animated illustration scene',seed:'2D animation style sequence'},
+    {l:'3D 動畫 3D Animation',v:'anim3d',nano:'Render a 3D animated scene',gpt:'3D CGI animated scene, studio quality',seed:'3D CGI animation sequence'},
+    {l:'手繪動畫 Hand-drawn',v:'animhand',nano:'Illustrate a hand-drawn animation frame',gpt:'hand-drawn animation style, expressive ink lines',seed:'hand-drawn animation style'},
+    {l:'賽璐璐 Cel Animation',v:'animcel',nano:'Draw a cel animation style frame',gpt:'classic cel animation style, flat colors, bold outlines',seed:'cel animation flat color style'},
+    {l:'像素 Pixel Art',v:'pixel',nano:'Design a pixel art scene',gpt:'pixel art style, 16-bit retro game aesthetic',seed:'pixel art retro 16-bit style'},
+    {l:'概念藝術 Concept Art',v:'concept',nano:'Paint a concept art scene',gpt:'concept art illustration, digital painting, detailed environment',seed:'concept art digital painting'},
+    {l:'角色多視圖 Character Sheet',v:'charsheet',nano:'Create a character reference sheet showing the same character from multiple angles',gpt:'character reference sheet, multiple views of the same character: front, side, back, 3/4 angle, consistent design throughout, white background, professional illustration style',seed:'character reference sheet multiple angles'},
+  ],
+  camera:[
+    {l:'ARRI Alexa 35 暖調有機膚色',v:'arri35',nano:'with organic warm ARRI Alexa 35 color science, natural skin tones and highlight rolloff',gpt:'ARRI Alexa 35 color science, organic warm skin tones, natural highlight rolloff, filmic',seed:'ARRI Alexa 35 color science, organic warm tones, natural highlight rolloff'},
+    {l:'ARRI Flex 粗糙底片顆粒',v:'arriflex',nano:'with ARRI Flex gritty analog grain, dark filmic tone',gpt:'ARRI Flex, dark film grain, gritty analog tone, vintage cinema',seed:'ARRI Flex film grain, dark gritty analog tone'},
+    {l:'Panavision DXL2',v:'pana',nano:'with Panavision DXL2 rich color separation',gpt:'Panavision Millennium DXL2, rich detail, strong color separation',seed:'Panavision color richness, strong color separation'},
+    {l:'RED Komodo 數位高飽和對比',v:'red',nano:'with RED Komodo vivid saturated colors, sharp digital contrast',gpt:'RED Komodo color science, vivid saturated colors, high contrast, sharp digital',seed:'RED Komodo, vivid saturated colors, high contrast digital'},
+    {l:'Sony Venice 冷調高解析',v:'venice',nano:'with Sony Venice clean cool clinical digital tone',gpt:'Sony Venice color profile, clean clinical, cooler midtones, high resolution',seed:'Sony Venice color profile, clean cool midtones'},
+    {l:'IMAX 極大動態範圍史詩感',v:'imax',nano:'with IMAX large format clarity, epic dynamic range',gpt:'IMAX camera, extreme dynamic range, epic scale, ultra sharp, large format',seed:'IMAX scale, extreme dynamic range, epic cinematic'},
+    {l:'Fuji Eterna 低對比淡化綠調',v:'fujieterna',nano:'with Fujifilm Eterna Cinema muted greens and soft highlight rolloff',gpt:'Fujifilm Eterna Cinema film stock, low contrast, soft highlight rolloff, muted greens',seed:'Fujifilm Eterna Cinema, low contrast, muted greens, soft rolloff'},
+    {l: 'Fuji Classic Chrome 冷霧褪色感',v:'fujichrome',nano:'with Fujifilm Classic Chrome desaturated muted documentary feel',gpt:'Fujifilm Classic Chrome simulation, desaturated muted colors, faded shadows, slightly cool',seed:'Fujifilm Classic Chrome, desaturated muted tones, documentary feel'},
+    {l:'Kodak Vision3 500T 暖調底片',v:'kodak',nano:'with Kodak Vision3 500T warm shadows and fine film grain',gpt:'Kodak Vision3 500T film stock, warm shadows, fine grain, cinematic film texture',seed:'Kodak Vision3 500T, warm film grain, cinematic texture'},
+    {l:'Kodak Portra 400 溫暖自然膚色',v:'portra',nano:'with Kodak Portra 400 warm skin tones and soft natural contrast',gpt:'Kodak Portra 400, warm skin tones, soft contrast, natural colors, fine grain',seed:'Kodak Portra 400 look, warm skin, soft contrast'},
+    {l:'Cinestill 800T 夜景紅暈滲光',v:'cinestill',nano:'with Cinestill 800T warm red halation glow and tungsten night atmosphere',gpt:'Cinestill 800T, tungsten-balanced, warm red halation glow, night film look',seed:'Cinestill 800T, red halation glow, tungsten night atmosphere'},
+    {l:'Fine Film 有機底片質感',v:'finefilm',nano:'with organic fine film grain and analog color warmth',gpt:'fine film camera, organic grain texture, filmic color rendition, analog warmth',seed:'fine film grain, organic analog color'},
+  ],
+  lens:[
+    {l:'Spherical 無變形球面鏡',v:'spherical',nano:'using a spherical lens with natural perspective',gpt:'spherical lens, natural perspective',seed:'spherical lens, natural perspective'},
+    {l:'Anamorphic 寬銀幕變形鏡',v:'anamorphic',nano:'using an anamorphic lens, 2.39:1 widescreen with horizontal lens flares and oval bokeh',gpt:'anamorphic lens, 2.39:1 widescreen, horizontal lens flare, oval bokeh',seed:'anamorphic lens, 2.39:1 widescreen, horizontal lens flares, oval bokeh'},
+    {l:'Petzval 漩渦式背景模糊',v:'petzval',nano:'using a Petzval lens with swirling bokeh around the edges',gpt:'Petzval lens, swirling bokeh vignette, artistic blur around edges',seed:'Petzval lens, swirling bokeh edges'},
+    {l:'Canon K35 復古耀光感',v:'k35',nano:'using a Canon K35 vintage lens with bright natural lens flare',gpt:'Canon K35 vintage lens, bright rendering, strong lens flare',seed:'Canon K35 lens flare, vintage bright rendering'},
+    {l:'Cooke 膚色柔和散景',v:'cooke',nano:'using a Cooke lens with warm soft bokeh and flattering skin rendering',gpt:'Cooke lens, warm soft bokeh, gentle rendering, flattering skin tones, Cooke Look',seed:'Cooke lens warm bokeh, gentle flattering rendering'},
+    {l:'Vintage Haze 復古霧感柔焦',v:'vintagehaze',nano:'using a vintage haze lens with soft focus and subtle chromatic aberration',gpt:'vintage haze lens, soft focus, slight chromatic aberration, nostalgic atmosphere',seed:'vintage haze lens softness, slight chromatic aberration'},
+    {l:'Zeiss Supreme 極致銳利無暈',v:'zeiss',nano:'using a Zeiss Supreme Prime for ultra-sharp clinical clarity',gpt:'Zeiss Supreme Prime, precise sharp rendering, controlled flare, clinical clarity',seed:'Zeiss Supreme Prime sharpness, clinical clarity'},
+    {l:'Modern Clinical 現代數位銳利',v:'modern',nano:'using a modern clinical prime lens with ultra-sharp precision',gpt:'modern clinical prime lens, ultra sharp, no optical aberration',seed:'modern clinical lens, ultra sharp'},
+  ],
+  focal:[
+    {l:'8mm 極廣角，強烈透視變形',v:'8',nano:'8mm ultra-wide, extreme distortion, immersive POV',gpt:'shot on 8mm ultra-wide, dramatic distortion, immersive POV',seed:'8mm ultra-wide, dramatic distortion'},
+    {l:'16mm 超廣角，沉浸式空間感',v:'16',nano:'16mm wide angle, expansive environment',gpt:'shot on 16mm wide angle, expansive environment',seed:'16mm wide angle, expansive depth'},
+    {l:'18mm 廣角，電影常用廣景',v:'18',nano:'18mm wide, cinematic environmental context',gpt:'shot on 18mm lens, wide cinematic framing, environmental context',seed:'18mm wide, environmental context'},
+    {l:'24mm 電影廣角，空間深度感',v:'24',nano:'24mm cinematic wide, spatial depth',gpt:'shot on 24mm lens, wide cinematic framing, spatial depth',seed:'24mm cinematic wide'},
+    {l:'35mm 電影標準，接近人眼',v:'35',nano:'35mm prime, versatile cinematic natural perspective',gpt:'shot on 35mm prime lens, versatile cinematic framing, natural perspective',seed:'35mm prime, cinematic natural perspective'},
+    {l:'50mm 自然人眼視角',v:'50',nano:'50mm standard, natural human eye perspective',gpt:'shot on 50mm standard lens, natural human perspective',seed:'50mm standard, natural human perspective'},
+    {l:'85mm 人像，背景壓縮虛化',v:'85',nano:'85mm portrait, flattering compression, background separation',gpt:'shot on 85mm portrait lens, slight compression, flattering perspective, background separation',seed:'85mm portrait lens, background compression'},
+    {l:'135mm 長焦，強烈空間壓縮',v:'135',nano:'135mm telephoto, strong depth compression',gpt:'shot on 135mm telephoto, strong depth compression, background abstracted',seed:'135mm telephoto, strong depth compression'},
+    {l:'200mm+ 超長焦，望遠窺探感',v:'200',nano:'200mm+ extreme telephoto, detached surveillance',gpt:'shot on 200mm+ telephoto, extreme compression, detached observation',seed:'200mm telephoto, extreme compression'},
+  ],
+  aperture:[
+    {l:'f/1.4 極淺景深，主體孤立',v:'f14',nano:'f/1.4 razor-thin depth of field, extreme bokeh',gpt:'f/1.4 aperture, razor-thin depth of field, extreme bokeh',seed:'f/1.4, razor-thin depth of field, extreme bokeh'},
+    {l:'f/2 淺景深，柔和背景分離',v:'f2',nano:'f/2 shallow depth, soft background',gpt:'f/2 aperture, shallow depth of field, soft background separation',seed:'f/2 shallow depth of field'},
+    {l:'f/2.8 淺至中景深，電影感',v:'f28',nano:'f/2.8 cinematic shallow-medium depth',gpt:'f/2.8 aperture, shallow to medium depth of field, cinematic bokeh',seed:'f/2.8 cinematic depth of field'},
+    {l:'f/4 適中景深，人物加環境',v:'f4',nano:'f/4 moderate depth of field',gpt:'f/4 moderate aperture, balanced depth of field',seed:'f/4 moderate depth of field'},
+    {l:'f/8 全清晰，前後景均銳',v:'f8',nano:'f/8 deep focus, full scene sharpness',gpt:'f/8 aperture, deep focus, full scene sharpness',seed:'f/8 deep focus, full scene sharp'},
+    {l:'f/16 超深景深，一切清晰',v:'f16',nano:'f/16 pan focus, everything sharp',gpt:'f/16 narrow aperture, everything in focus',seed:'f/16, everything in focus'},
+  ],
+  lut:[
+    {l:'Teal & Orange 好萊塢青橙調',v:'teal',nano:'graded with teal and orange color, Hollywood blockbuster palette',gpt:'teal and orange color grade, warm highlights, teal-blue shadows, Hollywood blockbuster',seed:'teal and orange grade, warm highlights, teal shadows'},
+    {l:'Bleach Bypass 漂白高對比去飽和',v:'bleach',nano:'with bleach bypass color — desaturated, gritty, silver retention',gpt:'bleach bypass, desaturated high contrast, silver retention, gritty texture',seed:'bleach bypass look, desaturated gritty'},
+    {l:'Cold Blue 冷藍壓暗懸疑調',v:'cold',nano:'in a cold blue noir grade with crushed blacks and clinical shadows',gpt:'cold blue color grade, crushed blacks, clinical steel-blue shadows, noir thriller',seed:'cold blue grade, crushed blacks, noir atmosphere'},
+    {l:'Warm Amber 暖琥珀懷舊調',v:'amber',nano:'with warm amber grading and golden nostalgic lifted blacks',gpt:'warm amber color grade, golden shadows, nostalgic warmth, lifted blacks',seed:'warm amber grade, golden nostalgic tones'},
+    {l:'Faded Film 底片褪色舊照感',v:'faded',nano:'with faded vintage film color, lifted blacks and analog warmth',gpt:'faded vintage film, lifted blacks, reduced saturation, warm cast, analog decay',seed:'faded vintage film, lifted blacks, analog feel'},
+    {l:'Fuji Velvia 高飽和鮮豔色',v:'velvia',nano:'with Fujifilm Velvia vivid saturation and deep greens and blues',gpt:'Fujifilm Velvia simulation, vivid saturated colors, deep greens and blues',seed:'Fuji Velvia vivid saturation, deep greens'},
+    {l:'ARRI Natural 自然電影暖調',v:'arrinat',nano:'with ARRI natural grade — subtle warm tone and filmic highlight rolloff',gpt:'ARRI natural color science, subtle warm grade, filmic highlight rolloff',seed:'ARRI natural grade, filmic rolloff'},
+    {l:'B&W 黑白銀鹽高對比',v:'bw',nano:'in high contrast black and white with silver gelatin quality',gpt:'high contrast black and white, rich blacks, clean whites, silver gelatin quality',seed:'high contrast black and white, silver gelatin look'},
+    {l:'Muted 低飽和歐洲藝術調',v:'muted',nano:'with desaturated muted tones, European art cinema palette',gpt:'desaturated muted palette, subdued tones, European art cinema look',seed:'desaturated muted palette, art cinema'},
+  ],
+  light:[
+    {l:'Golden Hour 日落斜陽金色光',v:'golden',nano:'in golden hour lighting with warm directional sunlight and long shadows',gpt:'golden hour lighting, warm directional sunlight at 15 degrees above horizon, long shadows',seed:'golden hour lighting, warm directional sunlight, long shadows'},
+    {l:'Magic Hour 黎明黃昏藍橙過渡',v:'magic',nano:'in magic hour dusk light with blue-orange sky transition',gpt:'magic hour dusk, blue-orange sky transition, soft diffused atmosphere',seed:'magic hour dusk, blue-orange atmosphere, soft diffused'},
+    {l:'Rim Light 主體背後邊緣勾光',v:'rim',nano:'with dramatic rim light against a dark background',gpt:'dramatic rim light against dark background, cinematic edge separation',seed:'dramatic rim light, dark background, cinematic edge glow'},
+    {l:'Backlit 逆光剪影輪廓',v:'backlit',nano:'with strong backlit silhouette contre-jour sunlight',gpt:'strong backlit silhouette, contre-jour sunlight',seed:'backlit silhouette, contre-jour, bright behind subject'},
+    {l:'Overcast 陰天全漫射無硬影',v:'overcast',nano:'in overcast daylight with even diffused light and clean shadows',gpt:'overcast daylight, even diffused light, no harsh shadows, soft natural wrap',seed:'overcast diffused light, soft even, no harsh shadows'},
+    {l:'Soft Key 45° 柔和主燈人像光',v:'softkey',nano:'with soft 45-degree key light for flattering portrait illumination',gpt:'soft key light from 45 degrees upper left, flattering portrait lighting',seed:'45 degree soft key light, flattering portrait'},
+    {l:'Volumetric 體積光霧氣丁達爾',v:'volumetric',nano:'with volumetric fog and god rays through atmospheric mist',gpt:'volumetric fog with backlight, atmospheric depth, god rays through mist and dust',seed:'volumetric fog, god rays through mist, atmospheric depth'},
+    {l:'Neon Night 霓虹燈濕地倒影',v:'neon',nano:'with neon light color contrast on wet urban night surfaces',gpt:'neon light color splash, warm and cool contrast, urban night, wet reflections',seed:'neon lights, warm-cool contrast, wet urban night reflections'},
+    {l:'Chiaroscuro 強烈明暗巴洛克光',v:'chiar',nano:'in chiaroscuro lighting with dramatic deep shadows and baroque contrast',gpt:'chiaroscuro lighting, dramatic deep shadows, high contrast, baroque quality',seed:'chiaroscuro, dramatic shadows, high contrast single source'},
+    {l:'Practical 畫面內現場光源',v:'practical',nano:'with motivated practical lighting from a visible source in frame',gpt:'motivated lighting from practical source, visible light source in frame, naturalistic',seed:'practical source lighting, visible in frame, naturalistic'},
+  ],
+  shotsize:[
+    {l:'EWS 極遠景，人物極小',v:'ews',nano:'extreme wide shot, tiny figure in vast landscape, epic scale',gpt:'extreme wide shot, tiny figure against vast environment, epic scale',seed:'extreme wide establishing shot'},
+    {l:'WS 遠景，全身可見',v:'ws',nano:'wide shot, full body, strong sense of location',gpt:'wide shot, full body visible, strong sense of location',seed:'wide shot, full environment visible'},
+    {l:'FS 全身從頭到腳',v:'fs',nano:'full shot, head to toe framing',gpt:'full shot, full body framed from head to toe',seed:'full body framed'},
+    {l:'MLS 中遠景，膝部以上',v:'mls',nano:'medium long shot, knees up framing',gpt:'medium long shot, framed from knees up',seed:'medium long shot, knees up'},
+    {l:'CS 牛仔鏡，大腿中段以上',v:'cs',nano:'cowboy shot, mid-thigh framing, hands visible',gpt:'cowboy shot, framed from mid-thigh up, hands visible',seed:'cowboy shot, mid-thigh framing'},
+    {l:'MS 中景，腰部以上',v:'ms',nano:'medium shot, waist up',gpt:'medium shot, framed from waist up',seed:'medium shot, waist up'},
+    {l:'MCU 中特寫，胸部以上',v:'mcu',nano:'medium close-up, chest up',gpt:'medium close-up, framed from chest up',seed:'medium close-up, chest up'},
+    {l:'CU 特寫，臉部為主',v:'cu',nano:'close-up, face dominates frame',gpt:'close-up portrait, face dominates the frame',seed:'close-up, face fills frame'},
+    {l:'ECU 大特寫，眼睛或局部',v:'ecu',nano:'extreme close-up, ultra-detailed, fills frame',gpt:'extreme close-up, ultra-detailed, fills entire frame',seed:'extreme close-up, maximum detail'},
+    {l:'Insert 插入鏡，物件細節',v:'insert',nano:'insert shot, extreme close detail of object',gpt:'insert shot, extreme close detail of object, dramatic side lighting',seed:'insert detail shot, object extreme close'},
+  ],
+  relation:[
+    {l:'Single 單一主體',v:'single',nano:'single subject shot',gpt:'single subject shot',seed:'single subject in frame'},
+    {l:'Two Shot 兩人同框',v:'twoshot',nano:'medium two shot, both characters, relationship tension',gpt:'medium two shot, both characters visible, relationship tension',seed:'two shot, both subjects visible'},
+    {l:'OTS 過肩，前景肩膀虛化',v:'ots',nano:'over-the-shoulder, foreground shoulder blurred',gpt:'over-the-shoulder shot, foreground shoulder blurred, subject in focus',seed:'over-the-shoulder framing'},
+    {l:'POV 主觀第一人稱視角',v:'pov',nano:'POV first-person perspective, hands in foreground',gpt:'POV shot, first-person perspective, hands slightly visible in foreground',seed:'POV first-person camera angle'},
+    {l:'Reaction 角色情緒反應',v:'reaction',nano:'reaction shot, emotional expression',gpt:'reaction shot, emotional expression, MCU framing',seed:'reaction shot, emotional close-up'},
+    {l:'Group 多人群像構圖',v:'group',nano:'group shot, multiple subjects, spatial relationship',gpt:'group shot, multiple subjects, spatial relationship visible',seed:'group shot, multiple subjects'},
+  ],
+  angle:[
+    {l:'Eye Level 平視，中性自然',v:'eye',nano:'eye-level angle, neutral natural',gpt:'eye-level angle, neutral natural perspective',seed:'eye-level camera angle'},
+    {l:'Low Angle 仰拍，強勢英雄感',v:'low',nano:'low-angle looking up, heroic imposing',gpt:'low-angle looking up, imposing figure, heroic power',seed:'low-angle shot, looking up'},
+    {l:'High Angle 俯拍，弱勢脆弱感',v:'high',nano:'high-angle looking down, subject vulnerable',gpt:'high-angle looking down, subject appears vulnerable',seed:'high-angle shot, looking down'},
+    {l:"Bird's Eye 鳥瞰",v:'bird',nano:"overhead bird's-eye view, geometric god perspective",gpt:"overhead bird's-eye view, geometric pattern, god perspective",seed:"overhead bird's-eye view"},
+    {l:'Dutch Angle 斜構圖，心理不安',v:'dutch',nano:'Dutch tilt, canted frame, disorienting',gpt:'Dutch tilt, canted frame, disorienting instability',seed:'Dutch tilt angle, canted frame'},
+    {l:"Worm's Eye 蟲眼",v:'worm',nano:"worm's-eye view, extreme low ground level",gpt:"worm's-eye view, extreme low angle from ground level",seed:"worm's-eye view, extreme low"},
+    {l:'Aerial 高空無人機俯瞰',v:'aerial',nano:'aerial drone shot, high altitude',gpt:'aerial drone shot, high altitude perspective',seed:'aerial drone shot, high altitude'},
+  ],
+  motion:[
+    {l:'Fixed 固定機位不動',v:'fixed',seed:'static locked-off camera, zero movement'},
+    {l:'Dolly In 整機向前推進',v:'dollyin',seed:'slow dolly in toward subject, gradual push'},
+    {l:'Pull Out 整機向後拉遠',v:'dollyout',seed:'slow dolly out, pull back reveal'},
+    {l:'Pan 原地左右水平搖',v:'pan',seed:'gentle pan right following the subject'},
+    {l:'Tilt Up 原地向上搖',v:'tilt',seed:'slow tilt up, camera rotates upward'},
+    {l:'Tracking 跟隨主體移動',v:'track',seed:'tracking shot following subject through space, smooth gimbal'},
+    {l:'Arc Shot 弧形繞主體拍',v:'arc',seed:'slow arc around subject, background parallax visible'},
+    {l:'Orbit 圍主體持續繞行',v:'orbit',seed:'slow orbit arc around subject'},
+    {l:'360 完整繞一圈',v:'o360',seed:'slow 360 full orbit around subject'},
+    {l:'Steadicam 穩定器流暢跟拍',v:'steady',seed:'smooth steadicam forward walk following character through space'},
+    {l:'Handheld 手持輕微晃動感',v:'hand',seed:'handheld camera, subtle natural shake, documentary feel'},
+    {l:'Crane Up 吊臂大範圍上升',v:'crane',seed:'crane up reveal, camera rises to show full environment'},
+    {l:'FPV 無人機第一視角俯衝',v:'fpv',seed:'FPV drone dive, first-person high-speed flight through space'},
+    {l:'Whip Pan 高速水平甩動鏡',v:'whip',seed:'whip pan, rapid horizontal sweep transition'},
+    {l:'Dolly Zoom 背景變形眩暈感',v:'dzoom',seed:'dolly zoom Vertigo effect, background warps while subject stays constant size'},
+    {l:'Rack Focus 從前景拉焦到後景',v:'rack',seed:'rack focus from foreground to background, attention redirects'},
+  ],
+  speed:[
+    {l:'Imperceptible 幾乎察覺不到的移動',v:'imp',seed:'imperceptible movement, barely noticeable drift'},
+    {l:'Slow 緩慢柔和移動',v:'slow',seed:'slow gentle movement'},
+    {l:'Smooth 流暢穩定移動',v:'smooth',seed:'smooth controlled motion'},
+    {l:'Slow Mo 慢動作，時間感延伸',v:'slomo',seed:'slow motion, time dramatically slows, enhanced detail'},
+    {l:'Speed Ramp 慢動作接全速動態',v:'ramp',seed:'dynamic speed ramp, slow motion transitioning to full speed'},
+  ],
+  grid:[
+    {l:'1×1 單張圖像',v:'1x1',cols:1,rows:1,note:'預設單張'},
+    {l:'2×2 四格，角色多角度',v:'2x2',cols:2,rows:2,note:'角色多角度 / 情緒板'},
+    {l:'3×3 分鏡九格，建議用 GPT',v:'3x3',cols:3,rows:3,note:'15秒完整分鏡 → 建議用 GPT Image-2'},
+  ],
+  director:[
+    {l:'王家衛 Wong Kar-wai',v:'wkw',nano:'Wong Kar-wai style — handheld shallow focus, saturated neon palette, 21mm lens distortion, practical light sources, step-printed motion blur, rain-wet surfaces',sig:'Wong Kar-wai style — handheld shallow focus, saturated neon palette, 21mm lens distortion, practical light sources, step-printed motion blur, rain-wet surfaces, cinematic Hong Kong night aesthetic'},
+    {l:'Christopher Nolan',v:'nolan',nano:'Christopher Nolan style — large format anamorphic, deep focus, desaturated teal-amber grade, bold symmetric wide shots',sig:'Christopher Nolan style — large format anamorphic, deep focus, desaturated teal-amber grade, practical lighting, bold symmetric wide shots, IMAX cinematic scale, real physical environments'},
+    {l:'朴贊郁 Park Chan-wook',v:'pcy',nano:'Park Chan-wook style — precise symmetrical composition, vivid color symbolism, deep reds and clinical whites, high contrast',sig:'Park Chan-wook style — precise symmetrical composition, vivid color symbolism, deep reds and clinical whites, high contrast dramatic lighting, wide-angle with extreme close-up contrast, Korean cinema aesthetic'},
+    {l:'Wes Anderson',v:'wes',nano:'Wes Anderson style — perfect center-frame symmetry, 40mm lens, flat pastel color palette, lateral dolly',sig:'Wes Anderson style — perfect center-frame symmetry, 40mm lens, flat pastel color palette, even diffuse lighting, lateral dolly movement, storybook aesthetic, deadpan composition'},
+    {l:'Denis Villeneuve',v:'dv',nano:'Denis Villeneuve style — anamorphic 2.39:1, epic scale, desaturated earth palette, slow deliberate camera',sig:'Denis Villeneuve style — anamorphic 2.39:1, epic scale with human smallness, desaturated earth palette, motivated natural lighting, slow deliberate camera, blue-hour and dawn lighting, cinematic grandeur'},
+    {l:'奉俊昊 Bong Joon-ho',v:'bjh',nano:'Bong Joon-ho style — wide social observation framing, desaturated class-coded palette, naturalistic Seoul',sig:'Bong Joon-ho style — wide social observation framing, desaturated palette with class color coding, naturalistic Seoul aesthetic, genre-fluid composition, vertical architecture as metaphor'},
+    {l:'Roger Deakins 掌鏡',v:'deakins',nano:'Roger Deakins style — motivated single-source naturalistic lighting, silhouette architecture, precise composition',sig:'Roger Deakins style — motivated single-source naturalistic lighting, silhouette and shadow architecture, precise composition, cinematography in service of character, no artificial light visible'},
+    {l:'Sofia Coppola',v:'sofia',nano:'Sofia Coppola style — 85mm telephoto intimacy, overexposed natural light, blush and gold palette',sig:'Sofia Coppola style — 85mm telephoto intimacy, overexposed natural light, blush and gold palette, impressionistic composition, female interiority, quiet beauty in stasis'},
+  ],
+};
+
+const TL={
+  climax:[
+    {t:'0-4s',d:'wide shot, static — 世界建立 world establish, 環境音 ambient sound'},
+    {t:'4-8s',d:'medium shot, slow push-in — 張力累積 tension builds, 主體準備 prepares'},
+    {t:'8-12s',d:'close-up — 情感高峰 emotional peak, one detail in sharp focus'},
+    {t:'12-15s',d:'extreme close-up, slow motion — 高潮動作 climax, emotional hold'},
+  ],
+  product:[
+    {t:'0-3s',d:'macro shot, static — product on dark surface, shallow DoF, rim light on edges'},
+    {t:'3-7s',d:'camera glides closer — warm light rakes surface, texture reveals'},
+    {t:'7-11s',d:'slow motion detail — mist diffuses, particles catching rim light'},
+    {t:'11-15s',d:'pull-out to hero frame — product centered, volumetric lighting, minimal background'},
+  ],
+  action:[
+    {t:'0-4s',d:'wide establishing, static — fighters face each other, mist, golden hour'},
+    {t:'4-8s',d:'medium tracking — fighter lunges, fluid orbital tracking follows motion'},
+    {t:'8-12s',d:'low-angle power shot — impact moment, slow motion, leaves scatter'},
+    {t:'12-15s',d:'pull-out wide — fighter victorious, rim light separating from mist'},
+  ],
+};
+
+const PRESETS={
+  portrait:{camera:'arri35',lens:'cooke',focal:'85',aperture:'f28',lut:'arrinat',light:'softkey',shotsize:'mcu',motion:'dollyin'},
+  street:{camera:'fujichrome',lens:'spherical',focal:'35',aperture:'f8',lut:'muted',light:'overcast',shotsize:'ms',motion:'hand'},
+  noir:{camera:'arriflex',lens:'zeiss',focal:'50',aperture:'f28',lut:'cold',light:'chiar',shotsize:'mcu',motion:'fixed'},
+  epic:{camera:'imax',lens:'anamorphic',focal:'18',aperture:'f8',lut:'teal',light:'volumetric',shotsize:'ews',motion:'crane'},
+  fuji:{camera:'fujieterna',lens:'vintagehaze',focal:'35',aperture:'f4',lut:'faded',light:'overcast',shotsize:'ms',motion:'track'},
+  wkw:{director:'wkw'},
+};
+
+const STAT={scene:'sv-scene',camera:'sv-camera',lens:'sv-lens',focal:'sv-focal'};
+const S={};
+let shots=[];
+
+function switchTab(n,btn){
+  document.querySelectorAll('#tab-bar .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('pane-'+n).classList.add('active');
+  build();
+}
+
+function switchRTab(n,btn){
+  document.querySelectorAll('.rtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.rtab-pane').forEach(p=>p.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('rpane-'+n).classList.add('active');
+}
+
+function makeGroup(gid,key,items){
+  const c=document.getElementById(gid);if(!c)return;
+  items.forEach(it=>{
+    const b=document.createElement('button');
+    b.className=key==='director'?'chip dir':(key==='grid'?'chip grid-chip':'chip');
+    b.textContent=it.l;
+    b.dataset.v=it.v;
+    if(it.note) b.title=it.note;
+    b.onclick=()=>toggle(key,it,b,c);
+    c.appendChild(b);
+  });
+}
+
+function toggle(key,item,btn,container){
+  const on=S[key]===item.v;
+  if(on){delete S[key];btn.classList.remove('on');}
+  else{S[key]=item.v;container.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
+  if(STAT[key]){
+    document.getElementById(STAT[key]).textContent=S[key]?item.l:'—';
+    document.getElementById('st-'+key).classList.toggle('lit',!!S[key]);
+  }
+  // Grid: update stat card and note
+  if(key==='grid'){
+    const sv=document.getElementById('sv-grid');
+    const st=document.getElementById('st-grid');
+    const note=document.getElementById('grid-note');
+    if(sv) sv.textContent=S[key]?item.l:'1×1';
+    if(st) st.classList.toggle('lit',!!S[key]);
+    if(note){
+      const notes={
+        '1x1':'單張輸出，適合人像、概念圖、產品圖。',
+        '2x2':'四格輸出，適合角色多角度、服裝對比、情緒板。Nano Banana Pro/2 角色一致性較強。',
+        '3x3':'九宮格分鏡，對應 15 秒影片場景。⚠️ 格局精準度建議優先使用 GPT Image-2（Nano Banana 可能出現混版）。'
+      };
+      if(S[key] && notes[S[key]] && S[key]!=='1x1'){
+        note.textContent=notes[S[key]];
+        note.style.display='block';
+      } else {
+        note.style.display='none';
+      }
+    }
+  }
+  build();
+}
+
+function gi(k){return S[k]?DB[k].find(i=>i.v===S[k]):null;}
+
+// Nano Banana: verb-first opener per scene type
+// Source: Google Cloud official prompting guide - "start with a strong verb"
+function sceneVerb(sceneV) {
+  const verbs = {
+    portrait:   'Photograph',
+    street:     'Capture',
+    cinematic:  'Shoot',
+    landscape:  'Capture',
+    action:     'Photograph',
+    product:    'Shoot',
+    doc:        'Document',
+    anim2d:     'Illustrate',
+    anim3d:     'Render',
+    animhand:   'Draw',
+    animcel:    'Draw',
+    pixel:      'Design',
+    concept:    'Paint',
+    charsheet:  'Create',
+  };
+  return verbs[sceneV] || 'Photograph';
+}
+
+function build(){
+  const subj=document.getElementById('subject').value.trim();
+  const dir=gi('director');
+
+  // Director mode
+  if(dir){
+    const p=subj?subj+', ':'';
+    const extraDir=document.getElementById('extra').value.trim();
+    // Nano: conversational verb-first with director style
+    const nanoDir = 'Photograph' + (p ? ' ' + p : '') + ' in the style of ' + (dir.nano||dir.sig) +
+      '. Photorealistic, natural rendering, no watermark' + (extraDir ? '. ' + extraDir : '') + '.';
+    // GPT: structured brief with director style
+    const gptDir = (p ? p + '\n' : '') +
+      dir.sig + '.\n' +
+      'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.' +
+      (extraDir ? '\n' + extraDir + '.' : '');
+    setOut('nano', nanoDir);
+    setOut('gpt', gptDir);
+    setOut('seed',p+dir.sig+', avoid jitter, avoid bent limbs, avoid identity drift, sharp clarity, stable picture, no blur, no ghosting, no flickering'+(extraDir?', '+extraDir:''));
+    return;
+  }
+
+  // Timeline mode — only outputs to Seedance; Image gets 9-panel grid prompt
+  const isTL=document.getElementById('pane-timeline').classList.contains('active')&&shots.length>0;
+  if(isTL){
+    const sty=[];['camera','lut','light'].forEach(k=>{const it=gi(k);if(it)sty.push(it.seed||it.gpt);});
+    const ss=sty.join(', ');
+    const con='avoid jitter, avoid bent limbs, maintain face consistency, sharp clarity, stable picture, no ghosting, no flickering';
+    const tlLines=shots.map(s=>'['+s.t+']: '+s.d).join('\n');
+
+    // GPT Image-2 → 9-panel grid prompt derived from timeline
+    const gridShots=shots.slice(0,9).map((s,i)=>`Panel ${i+1}: ${s.d}`).join('. ');
+    const gridPrompt=`Create a 3×3 cinematic storyboard grid.\n${subj?subj+'\n':''}${ss?ss+'\n':''}${gridShots}\nAll panels share consistent character, lighting, and color palette. Thin dark border between panels. Panel numbers in corner. No other text overlays.`;
+
+    setOut('nano',gridPrompt);
+    setOut('gpt',gridPrompt);
+    setOut('seed',(subj?subj+', ':'')+(ss?ss+', ':'')+'\n'+tlLines+'\n'+con);
+    return;
+  }
+
+  // Normal mode
+  const np=[],gp=[],sp=[];
+  if(subj){np.push(subj);gp.push(subj);sp.push(subj);}
+  const sc=gi('scene');
+  if(sc){np.unshift(sc.nano||sc.gpt);gp.unshift(sc.gpt);sp.unshift(sc.seed);}
+  ['camera','lens','focal','aperture','lut','light'].forEach(k=>{
+    const it=gi(k);
+    if(it){np.push(it.nano||it.gpt);gp.push(it.gpt);sp.push(it.seed||it.gpt);}
+  });
+  const ss=gi('shotsize');if(ss){np.push(ss.nano||ss.gpt);gp.push(ss.gpt);sp.push(ss.seed);}
+  const rel=gi('relation');if(rel){np.push(rel.nano||rel.gpt);gp.push(rel.gpt);sp.push(rel.seed);}
+  const ang=gi('angle');if(ang){np.push(ang.nano||ang.gpt);gp.push(ang.gpt);sp.push(ang.seed);}
+  const mo=gi('motion');const spd=gi('speed');
+
+  if(!np.length){setOut('nano',null);setOut('gpt',null);setOut('seed',null);return;}
+
+  const imgQuality='ultra-realistic, photorealistic, sharp clarity, professional photography, no blur, no artifacts';
+  const con='avoid jitter, avoid bent limbs, avoid identity drift, maintain face consistency, sharp clarity, natural colors, stable picture, no blur, no ghosting, no flickering';
+  const mstr=mo?(spd?spd.seed+' '+mo.seed:mo.seed):'static locked-off camera';
+
+  const extra = document.getElementById('extra').value.trim();
+
+  // ── NANO BANANA: verb-first conversational sentence ──
+  // Rule: Start with strong action verb. Describe scene naturally like talking to a photographer.
+  // Positive framing only. No keyword spam. No "stunning/amazing/masterpiece".
+  // Structure: Photograph/Capture/Shoot [subject] [doing action] in [environment].
+  //            [Camera detail]. [Lighting]. [Color/style]. [Positive constraints].
+  const gridItem = gi('grid');
+  const gridCols = gridItem ? gridItem.cols : 1;
+  const gridRows = gridItem ? gridItem.rows : 1;
+  const isGrid = gridCols * gridRows > 1;
+
+  const nanoVerb = sceneVerb(sc ? sc.v : null);
+  const nanoParts = [];
+  if (subj) nanoParts.push(subj);
+  ['camera','lens','focal','aperture','lut','light'].forEach(k => {
+    const it = gi(k); if (it && it.nano) nanoParts.push(it.nano);
+  });
+  const nss = gi('shotsize'); if (nss && nss.nano) nanoParts.push(nss.nano);
+  const nrel = gi('relation'); if (nrel && nrel.nano) nanoParts.push(nrel.nano);
+  const nang = gi('angle'); if (nang && nang.nano) nanoParts.push(nang.nano);
+  const nanoScene = sc ? sc.nano : '';
+  let nanoPrompt;
+  if(isGrid){
+    const totalPanels = gridCols * gridRows;
+    const panelDesc = nanoParts.length ? nanoParts.join(', ') : 'cinematic scene';
+    const rows = [];
+    let panelNum = 1;
+    for(let r=0;r<gridRows;r++){
+      const rowPanels = [];
+      for(let col=0;col<gridCols;col++){
+        rowPanels.push('Panel ' + panelNum + ': ' + (panelNum===1?'opening shot, '+panelDesc : panelNum===totalPanels?'final shot, '+panelDesc : 'continuation, ' + panelDesc));
+        panelNum++;
+      }
+      rows.push('Row '+(r+1)+': '+rowPanels.join(' | '));
+    }
+    nanoPrompt = 'Create a ' + gridCols + '×' + gridRows + ' cinematic storyboard grid' +
+      (nanoScene ? ' for a ' + nanoScene : '') + '.\n' +
+      rows.join('\n') + '\n' +
+      'All panels share: ' + (nanoParts.length ? nanoParts.join(', ') + '.' : 'consistent lighting and color palette.') + '\n' +
+      'Consistent character design. Thin dark border between panels. Panel number in corner. No other text overlays.' +
+      (extra ? '\n' + extra : '');
+  } else {
+    nanoPrompt = nanoVerb + (nanoScene ? ' ' + nanoScene : '') +
+      (nanoParts.length ? '. ' + nanoParts.join(', ') : '') +
+      '. Photorealistic, natural light rendering, no watermark, no text overlay' +
+      (extra ? '. ' + extra : '') + '.';
+  }
+  setOut('nano', nanoPrompt);
+
+  // ── GPT IMAGE-2: structured brief, Scene→Subject→Details→Lighting→Constraints ──
+  // Rule: Noun-first, layered paragraphs. Use line breaks between sections for complex prompts.
+  // Describe the photograph, not the fantasy. Visual facts over adjectives.
+  // "Excitement does not render." - OpenAI cookbook
+  const gptScene  = sc ? sc.gpt : '';
+  const gptCam    = gi('camera');
+  const gptLens   = gi('lens');
+  const gptFocal  = gi('focal');
+  const gptApert  = gi('aperture');
+  const gptLut    = gi('lut');
+  const gptLight  = gi('light');
+  const gptSS     = gi('shotsize');
+  const gptRel    = gi('relation');
+  const gptAng    = gi('angle');
+
+  const gptLines = [];
+  // Special: 九宮格 overrides GPT format entirely
+
+  // Special: 角色多視圖 overrides GPT format
+  if (sc && sc.v === 'charsheet') {
+    const charSubj = subj || 'a character';
+    const charStyle = [];
+    if (gptCam) charStyle.push(gptCam.gpt);
+    if (gptLut) charStyle.push(gptLut.gpt);
+    const charPrompt = 'Character reference sheet for ' + charSubj + '.\n' +
+      'Show the same character from 6 angles: front view, left profile, right profile, back view, 3/4 view, close-up face.\n' +
+      '2×3 grid layout, white or neutral background, consistent character design, outfit, and proportions throughout.\n' +
+      (charStyle.length ? charStyle.join(', ') + '.\n' : '') +
+      'Professional character design illustration, clean lines, no background clutter, labeled angles.' +
+      (extra ? '\n' + extra + '.' : '');
+    setOut('nano', 'Create a character reference sheet for ' + charSubj +
+      ' showing front, side, back, and 3/4 views. Consistent character design throughout, white background, professional illustration.' +
+      (extra ? ' ' + extra + '.' : ''));
+    setOut('gpt', charPrompt);
+    setOut('seed', [...sp, mstr, con, ...(extra ? [extra] : [])].join(', '));
+    return;
+  }
+
+  // Line 1: Scene + subject
+  let l1 = '';
+  if (gptScene) l1 += gptScene + '. ';
+  if (subj) l1 += subj + '.';
+  if (l1) gptLines.push(l1.trim());
+  // Line 2: Camera + lens + focal + aperture
+  const techParts = [];
+  if (gptSS) techParts.push(gptSS.gpt);
+  if (gptRel) techParts.push(gptRel.gpt);
+  if (gptAng) techParts.push(gptAng.gpt);
+  if (gptFocal) techParts.push(gptFocal.gpt);
+  if (gptLens) techParts.push(gptLens.gpt);
+  if (gptApert) techParts.push(gptApert.gpt);
+  if (techParts.length) gptLines.push(techParts.join(', ') + '.');
+  // Line 3: Lighting + color
+  const styleParts = [];
+  if (gptLight) styleParts.push(gptLight.gpt);
+  if (gptLut) styleParts.push(gptLut.gpt);
+  if (gptCam) styleParts.push(gptCam.gpt);
+  if (styleParts.length) gptLines.push(styleParts.join(', ') + '.');
+  // Line 4: Extra + constraints
+  const constLine = 'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.' +
+    (extra ? ' ' + extra + '.' : '');
+  gptLines.push(constLine);
+
+  let gptFinal;
+  if(isGrid){
+    const totalPanels2 = gridCols * gridRows;
+    const panelRows2 = [];
+    let pn2 = 1;
+    const styleDesc = [...styleParts.map(s=>s.replace('.','')),...techParts.map(t=>t.replace('.',''))].join(', ');
+    for(let r=0;r<gridRows;r++){
+      const rp=[];
+      for(let col=0;col<gridCols;col++){
+        rp.push('Panel '+pn2+': '+(pn2===1?'establishing shot':(pn2===totalPanels2?'closing shot':'mid-sequence shot')));
+        pn2++;
+      }
+      panelRows2.push('Row '+(r+1)+': '+rp.join(' | '));
+    }
+    gptFinal = (l1?l1+'\n':'') +
+      'Grid layout: ' + gridCols + '×' + gridRows + ' storyboard (' + totalPanels2 + ' panels).\n' +
+      panelRows2.join('\n') + '\n' +
+      (styleDesc ? styleDesc + '.\n' : '') +
+      'All panels: consistent character, wardrobe, environment, lighting and color grade. Only action and framing change between panels.\n' +
+      'Thin dark border between panels. Panel number label in corner. No other text overlays.\n' +
+      constLine;
+  } else {
+    gptFinal = gptLines.join('\n');
+  }
+  setOut('gpt', gptFinal);
+  setOut('seed', [...sp, mstr, con, ...(extra ? [extra] : [])].join(', '));
+}
+
+function setOut(type,text){
+  const el=document.getElementById('out-'+type);
+  if(!text){el.value='';el.className='out-body';}
+  else{el.value=text;el.className='out-body';}
+}
+function clearOut(type){
+  const el=document.getElementById('out-'+type);
+  el.value='';
+  toast('已清除 Cleared');
+}
+
+function renderTL(){
+  const area=document.getElementById('tl-area');
+  if(!shots.length){area.innerHTML='<div style="font-size:16px;color:var(--text3);padding:2px 0">尚無鏡頭段 / No shots yet — add below</div>';return;}
+  area.innerHTML=shots.map((s,i)=>`
+    <div class="tl-row">
+      <input class="tl-in" value="${s.t}" placeholder="0-4s" oninput="shots[${i}].t=this.value;build()"/>
+      <textarea class="tl-in" placeholder="Shot + Action + Lighting..." oninput="shots[${i}].d=this.value;build()">${s.d}</textarea>
+      <button class="tl-del" onclick="removeShot(${i})">✕</button>
+    </div>`).join('');
+  build();
+}
+function addShot(){const ts=['0-4s','4-8s','8-12s','12-15s'];shots.push({t:ts[shots.length]||`${shots.length*4}-${shots.length*4+4}s`,d:''});renderTL();}
+function removeShot(i){shots.splice(i,1);renderTL();}
+function clearTL(){shots=[];renderTL();build();}
+function applyTLT(n){
+  shots=TL[n].map(s=>({...s}));renderTL();
+  document.querySelectorAll('#tab-bar .tab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+  document.querySelector('#tab-bar .tab:nth-child(4)').classList.add('active');
+  document.getElementById('pane-timeline').classList.add('active');
+  // Switch to Video tab to show Seedance output
+  switchRTab('video', document.querySelector('.rtab:nth-child(2)'));
+}
+
+function doCopy(type){
+  const el=document.getElementById('out-'+type);
+  if(!el.value.trim()){toast('欄位是空的 / Empty');return;}
+  navigator.clipboard.writeText(el.value).then(()=>toast('已複製 Copied ✓'));
+}
+function doDownload(type){
+  const el=document.getElementById('out-'+type);
+  if(!el.value.trim()){toast('欄位是空的 / Empty');return;}
+  const names={nano:'nano-banana',gpt:'gpt-image2',seed:'seedance'};
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(el.value);
+  a.download='prompt-'+names[type]+'-'+Date.now()+'.txt';
+  a.click();toast('已下載 Downloaded ✓');
+}
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2200);
+}
+
+function applyPreset(name){
+  doClear(true);const p=PRESETS[name];
+  Object.entries(p).forEach(([key,val])=>{
+    const item=DB[key]&&DB[key].find(i=>i.v===val);if(!item)return;
+    const c=document.getElementById('g-'+key);if(!c)return;
+    const btn=c.querySelector(`[data-v="${val}"]`);
+    if(btn){S[key]=val;btn.classList.add('on');}
+    if(STAT[key]){document.getElementById(STAT[key]).textContent=item.l;document.getElementById('st-'+key).classList.add('lit');}
+  });
+  if(p.director){
+    document.querySelectorAll('#tab-bar .tab').forEach(t=>t.classList.remove('active'));
+    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
+    document.querySelector('#tab-bar .tab:nth-child(3)').classList.add('active');
+    document.getElementById('pane-director').classList.add('active');
+  }
+  build();
+}
+
+function doClear(silent){
+  Object.keys(S).forEach(k=>delete S[k]);
+  document.querySelectorAll('.chip.on').forEach(b=>b.classList.remove('on'));
+  Object.entries(STAT).forEach(([k,id])=>{
+    document.getElementById(id).textContent='—';
+    document.getElementById('st-'+k).classList.remove('lit');
+  });
+  document.getElementById('subject').value='';
+  build();if(!silent)toast('已清除全部 All Cleared');
+}
+
+function doSave(){
+  const name=document.getElementById('save-name').value.trim();
+  if(!name){toast('請輸入名稱');return;}
+  const which=document.getElementById('save-which').value;
+  const nanoEl=document.getElementById('out-nano');
+  const gptEl=document.getElementById('out-gpt');
+  const seedEl=document.getElementById('out-seed');
+
+  let promptText='';
+  if(which==='nano') promptText=nanoEl.value.trim();
+  else if(which==='gpt') promptText=gptEl.value.trim();
+  else if(which==='seed') promptText=seedEl.value.trim();
+  else if(which==='all'){
+    const parts=[];
+    if(nanoEl.value.trim()) parts.push('── Nano Banana Pro/2 ──\n'+nanoEl.value.trim());
+    if(gptEl.value.trim()) parts.push('── GPT Image-2 ──\n'+gptEl.value.trim());
+    if(seedEl.value.trim()) parts.push('── Seedance 2.0 ──\n'+seedEl.value.trim());
+    promptText=parts.join('\n\n');
+  }
+
+  if(!promptText){toast('欄位是空的，請先生成或輸入 prompt');return;}
+
+  const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
+  saved.unshift({
+    name,
+    type:'prompt',
+    which,
+    text:promptText,
+    ts:Date.now()
+  });
+  if(saved.length>30)saved.pop();
+  localStorage.setItem('cpb-v6',JSON.stringify(saved));
+  document.getElementById('save-name').value='';
+  renderSaved();
+  toast('已儲存 Saved: '+name);
+}
+
+function doSavePreset(){
+  const name=document.getElementById('save-preset-name').value.trim();
+  if(!name){toast('請輸入名稱');return;}
+  const gptEl=document.getElementById('out-gpt');
+  if(!gptEl.value.trim()){toast('請先選擇選項');return;}
+  const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
+  saved.unshift({
+    name,
+    type:'preset',
+    state:{...S},
+    subj:document.getElementById('subject').value,
+    extra:document.getElementById('extra').value,
+    tl:[...shots],
+    ts:Date.now()
+  });
+  if(saved.length>30)saved.pop();
+  localStorage.setItem('cpb-v6',JSON.stringify(saved));
+  document.getElementById('save-preset-name').value='';
+  renderSaved();
+  toast('已儲存組合 Saved: '+name);
+}
+
+function renderSaved(){
+  const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
+  const list=document.getElementById('saved-list');
+  if(!saved.length){list.innerHTML='<div class="saved-empty">尚無收藏 / No saved presets</div>';return;}
+  list.innerHTML=saved.map((s,i)=>`
+    <div class="si">
+      <div class="si-dot"></div>
+      <span class="si-name">${s.name}</span>
+      <button class="si-load" onclick="loadSaved(${i})">載入</button>
+      <button class="si-del" onclick="delSaved(${i})">✕</button>
+    </div>`).join('');
+}
+
+function loadSaved(i){
+  const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
+  const s=saved[i];
+
+  // Prompt type: copy to clipboard
+  if(s.type==='prompt'){
+    navigator.clipboard.writeText(s.text).then(()=>toast('已複製 Copied: '+s.name));
+    return;
+  }
+
+  // Preset type: restore options
+  doClear(true);
+  document.getElementById('subject').value=s.subj||'';
+  if(s.extra) document.getElementById('extra').value=s.extra;
+  if(s.tl&&s.tl.length){shots=[...s.tl];renderTL();}
+  Object.entries(s.state||{}).forEach(([key,val])=>{
+    const item=DB[key]&&DB[key].find(i=>i.v===val);if(!item)return;
+    const cont=document.getElementById('g-'+key);if(!cont)return;
+    const btn=cont.querySelector('[data-v="'+val+'"]');
+    if(btn){S[key]=val;btn.classList.add('on');}
+    if(STAT[key]){document.getElementById(STAT[key]).textContent=item.l;document.getElementById('st-'+key).classList.add('lit');}
+  });
+  build();toast('已載入 Loaded: '+s.name);
+}
+
+function delSaved(i){
+  const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
+  saved.splice(i,1);localStorage.setItem('cpb-v6',JSON.stringify(saved));renderSaved();
+}
+
+const GM={scene:'g-scene',camera:'g-camera',lens:'g-lens',focal:'g-focal',aperture:'g-aperture',lut:'g-lut',light:'g-light',shotsize:'g-shotsize',relation:'g-relation',angle:'g-angle',motion:'g-motion',speed:'g-speed',director:'g-director',grid:'g-grid'};
+Object.entries(GM).forEach(([k,g])=>makeGroup(g,k,DB[k]));
+renderTL();renderSaved();
+document.getElementById('subject').addEventListener('input',build);
+document.getElementById('extra').addEventListener('input',build);
+</script>
+</body>
+</html>
