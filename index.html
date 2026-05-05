@@ -3,38 +3,35 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cinema Prompt Builder</title>
+<title>CinePrompt</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%23b03520'/><text x='16' y='23' font-family='DM Sans,Arial,sans-serif' font-size='22' font-weight='600' text-anchor='middle' fill='%23fefefe'>C</text></svg>">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@300;400;500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,400;1,500;1,600&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&family=IBM+Plex+Mono:wght@300;400;500&family=Noto+Sans+TC:wght@300;400;500;600&display=swap');
 :root{
-  --bg:#fefefe;
-  --surface:#fefefe;
-  --surface2:#e7e7e7;
-  --surface3:#484437;
-  --line:#2e2519;
-  --line2:#857461;
-  --text:#776b5b;
-  --text2:#e4d6c9;
-  --text3:#857461;
-  --accent:#be8d1e;
-  --accent-dim:rgba(201,162,74,0.08);
-  --accent-dim2:rgba(201,162,74,0.16);
-  --blue:#7aa4c6;
-  --blue-dim:rgba(122,164,198,0.10);
-  --green:#84b47c;
-  --green-dim:rgba(132,180,124,0.10);
-  --purple:#c0a4c0;
-  --purple-dim:rgba(192,164,192,0.10);
-  --red:#c4745e;
-  --red-dim:rgba(196,116,94,0.08);
-  --seed:#7aa4c6;
-  --seed-dim:rgba(122,164,198,0.10);
-  --r:3px;
+  --bg:#fdfaf7;
+  --surface2:#f5f0ea;
+  --surface3:#2a1c16;
+  --line:#ddd5cc;
+  --text:#1e1410;
+  --text2:#f8f2ec;
+  --text3:#6e5648;
+  --accent:#b03520;
+  --accent-dim:rgba(176,53,32,0.08);
+  --accent-dim2:rgba(176,53,32,0.16);
+  --blue:#3468c0;
+  --blue-dim:rgba(52,104,192,0.12);
+  --green:#2e8848;
+  --green-dim:rgba(46,136,72,0.12);
+  --purple:#9040b8;
+  --purple-dim:rgba(144,64,184,0.12);
+  --red:#c03020;
+  --red-dim:rgba(192,48,32,0.10);
+  --r:5px;
   --ease:cubic-bezier(0.16,1,0.3,1);
   --spring:cubic-bezier(0.34,1.56,0.64,1);
-  --mono:'IBM Plex Mono','Fira Code','Consolas',monospace;
+  --mono:'IBM Plex Mono','Fira Code','Consolas','PingFang TC','Microsoft JhengHei','Noto Sans TC',monospace;
   --display:'Cormorant Garamond',Georgia,serif;
-  --sans:'DM Sans',system-ui,-apple-system,sans-serif;
+  --sans:'DM Sans','Noto Sans TC','PingFang TC','Microsoft JhengHei',system-ui,sans-serif;
 }
 @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;transition-duration:.01ms!important}}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -56,13 +53,13 @@ body::after{
 }
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--line2);border-radius:2px}
+::-webkit-scrollbar-thumb{background:var(--text3);border-radius:2px}
 ::-webkit-scrollbar-thumb:hover{background:var(--text3)}
 
 /* ─── Header ─── */
 header{
   position:sticky;top:0;z-index:30;
-  background:rgba(13,11,9,0.15);
+  background:rgba(28,18,14,0.06);
   backdrop-filter:blur(20px) saturate(1.4);
   padding:0 24px;height:48px;
   display:flex;align-items:center;gap:12px;
@@ -76,45 +73,37 @@ header{
 .logo-icon{display:none}
 .logo-name{
   font-size:28px;font-weight:600;
-  color:var(--surface2);letter-spacing:-0.01em;
+  color:var(--text);letter-spacing:-0.01em;
 }
 .logo-sub{font-size:18px;color:var(--text);font-weight:500;letter-spacing:0.01em}
-.hd-sep{width:1px;height:18px;background:var(--line2);margin:0 2px}
+.hd-sep{width:1px;height:18px;background:var(--text3);margin:0 2px}
 .hd-pill{
   font-size:16px;font-weight:500;letter-spacing:.08em;
-  padding:3px 8px;border-radius:2px;
+  padding:3px 8px;border-radius:4px;
   background:transparent;color:var(--text3);
-  border:1px solid var(--line2);
+  border:1px solid var(--text3);
   font-family:var(--mono);text-transform:uppercase;
 }
 .header-right{margin-left:auto;display:flex;gap:6px;align-items:center}
 
 /* ─── Layout ─── */
-.app{display:grid;grid-template-columns:1fr 460px;min-height:calc(100vh - 48px)}
-.left{padding:24px 28px 80px;border-right:1px solid var(--line);overflow-y:auto}
+.app{display:grid;grid-template-columns:1fr 700px;min-height:calc(100vh - 48px)}
+.left{padding:0 28px 80px;border-right:1px solid var(--line);overflow-y:auto;height:calc(100vh - 48px)}
 .right{
   display:flex;flex-direction:column;gap:0;
   position:sticky;top:48px;
   height:calc(100vh - 48px);
-  background:var(--surface);
+  background:var(--bg);
   overflow:hidden;
 }
 
-/* ─── Stats ─── */
-.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-bottom:24px}
-.stat{
-  background:transparent;border:1px solid var(--line);
-  border-radius:var(--r);padding:10px 12px;
-  transition:border-color .2s var(--ease);cursor:default;
-}
-.stat.lit{border-color:rgba(201,162,74,0.35);background:var(--accent-dim)}
-.stat-l{
-  font-size:18px;color:var(--text3);font-weight:500;
-  text-transform:uppercase;margin-bottom:5px;
-}
-.stat-v{
-  font-size:18px;color:var(--accent);font-weight:500;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+/* ─── Sticky input block ─── */
+.left-sticky{
+  position:sticky;top:0;z-index:20;
+  background:var(--bg);
+  padding:20px 28px 14px;
+  margin:0 -28px 20px;
+  border-bottom:1px solid var(--line);
 }
 
 /* ─── Field ─── */
@@ -124,12 +113,12 @@ header{
   text-transform:uppercase;margin-bottom:7px;
 }
 .text-input{
-  width:100%;background:transparent;border:1px solid var(--line2);
+  width:100%;background:transparent;border:1px solid var(--text3);
   border-radius:var(--r);padding:13px 13px;
   color:var(--text);font-size:16px;font-family: var(--mono);outline:none;
-  transition:border-color .15s,box-shadow .15s;
+  transition:border-color .15s;
 }
-.text-input:focus{border-color:rgba(201,162,74,0.45);box-shadow:0 0 0 3px rgba(201,162,74,0.06)}
+.text-input:focus{border-color:rgba(176,53,32,0.45);}
 .text-input::placeholder{color:var(--text3)}
 
 /* ─── Tabs ─── */
@@ -140,14 +129,15 @@ header{
 .tab{
   padding:8px 16px;font-size:18px;font-weight:400;
   color:var(--text3);cursor:pointer;
-  border-bottom:2px solid transparent;
+  border-bottom:3px solid transparent;
   transition:color .14s,border-color .14s;
   background:none;border-top:none;border-left:none;border-right:none;
   font-family:var(--sans);white-space:nowrap;text-align:center;
   letter-spacing:.02em;
 }
-.tab:hover{color:var(--text2)}
+.tab:hover{color:var(--text)}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+.tab.tab-video-dim{opacity:.38;transition:opacity .2s}
 .tab-pane{display:none}
 .tab-pane.active{display:block;animation:fadeUp .15s var(--ease)}
 @keyframes fadeUp{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
@@ -157,39 +147,35 @@ header{
 .sec-label{
   font-size:16px;font-weight:500;
   color:var(--text3);letter-spacing:.02em;
-  margin-bottom:10px;
+  margin-bottom:10px;text-transform: uppercase;
   display:flex;align-items:center;gap:10px;
 }
 .sec-label::after{
   content:'';flex:1;height:1px;
-  background:linear-gradient(to right,var(--line2),transparent);
+  background:linear-gradient(to right,var(--text3),transparent);
 }
 
 /* ─── Chips ─── */
 .chips{display:flex;flex-wrap:wrap;gap:8px}
 .chip{
-  padding:5px 11px;border:1px solid var(--line2);border-radius:12px;
+  padding:5px 11px;border:1px solid var(--text3);border-radius:12px;
   background:transparent;color:var(--text3);
   cursor:pointer;font-size:16px;font-weight:400;font-family:var(--sans);
   transition:all .13s var(--ease);user-select:none;white-space:nowrap;
   letter-spacing:.01em;
 }
-.chip:hover{border-color:var(--line2);color:var(--text2);background:var(--surface3);transform:translateY(-1px)}
+.chip:hover{border-color:var(--text3);color:var(--text2);background:var(--surface3);transform:translateY(-1px)}
 .chip:active{transform:scale(.96);transition-duration:.07s}
 .chip.on{
-  background:var(--accent-dim2);border-color:rgba(201,162,74,0.5);
+  background:var(--accent-dim2);border-color:rgba(176,53,32,0.5);
   color:var(--accent);font-weight:500;
 }
-.chip.grid-chip{border-radius:12px}
-.chip.dir.on{
-  background:rgba(192,164,192,0.12);border-color:rgba(192,164,192,0.45);
-  color:var(--purple);
-}
+
 
 /* ─── Notice ─── */
 .notice{
   background:transparent;border:1px solid var(--line);
-  border-left:2px solid var(--accent);
+  border-left:3px solid var(--accent);
   border-radius:var(--r);padding:10px 14px;
   font-size:16px;color:var(--text3);line-height:1.7;margin-bottom:20px;
 }
@@ -200,15 +186,15 @@ header{
 .tl-row{display:grid;grid-template-columns:68px 1fr 26px;gap:6px;margin-bottom:8px;align-items:start}
 .tl-in{
   background:var(--surface2);border:1px solid var(--line);
-  border-radius:2px;padding:7px 10px;
+  border-radius:4px;padding:7px 10px;
   color:var(--text);font-size:16px;font-family:var(--sans);outline:none;width:100%;
   transition:border-color .13s;
 }
-.tl-in:focus{border-color:rgba(201,162,74,0.4)}
+.tl-in:focus{border-color:rgba(176,53,32,0.4)}
 .tl-in::placeholder{color:var(--text3)}
 textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 .tl-del{
-  width:26px;height:26px;border-radius:2px;
+  width:26px;height:26px;border-radius:4px;
   border:none;background:none;color:var(--text3);
   cursor:pointer;font-size:13px;display:flex;align-items:center;
   justify-content:center;margin-top:6px;flex-shrink:0;
@@ -217,28 +203,29 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 .tl-del:hover{background:var(--red-dim);color:var(--red)}
 .tl-actions{display:flex;gap:7px;margin-bottom:16px}
 .ghost-btn{
-  padding:5px 12px;border:1px solid var(--line2);border-radius:2px;
+  padding:5px 12px;border:1px solid var(--text3);border-radius:6px;
   background:none;color:var(--text3);font-size:16px;font-weight:400;
   cursor:pointer;font-family:var(--sans);
   transition:border-color .13s,color .13s,background .13s;
   letter-spacing:.01em;
 }
 .ghost-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
+.ghost-btn.active{border-color:rgba(176,53,32,0.5);color:var(--accent);background:var(--accent-dim2);font-weight:500}
 
 /* ─── Right Panel ─── */
 .right-tabs{
   display:flex;gap:0;border-bottom:1px solid var(--line);
-  background:var(--surface);flex-shrink:0;
+  background:var(--bg);flex-shrink:0;
 }
 .rtab{
   padding:16px 18px;font-size:18px;font-weight:400;
   color:var(--text3);cursor:pointer;
-  border-bottom:2px solid transparent;
+  border-bottom:3px solid transparent;
   transition:color .13s,border-color .13s;
   background:none;border-top:none;border-left:none;border-right:none;
   font-family:var(--sans);white-space:nowrap;letter-spacing:.01em;
 }
-.rtab:hover{color:var(--text2)}
+.rtab:hover{color:var(--text)}
 .rtab.active{color:var(--text);border-bottom-color:var(--accent)}
 .rtab-pane{display:none;flex:1;flex-direction:column;overflow:hidden}
 .rtab-pane.active{display:flex}
@@ -256,10 +243,9 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 .out-label{font-size:18px;font-weight:500;color:var(--text3);text-transform:uppercase;font-family:var(--mono)}
 .out-badge{
   font-size:16px;font-weight:500;padding:2px 8px;
-  border-radius:2px;letter-spacing:.06em;font-family:var(--mono);
+  border-radius:4px;letter-spacing:.06em;font-family:var(--mono);
 }
-.badge-nano{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(201,162,74,0.25)}
-.badge-gpt{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(201,162,74,0.25)}
+.badge-nano,.badge-gpt{background:var(--accent-dim);color:var(--accent);border:1px solid rgba(176,53,32,0.25)}
 .badge-seed{background:var(--blue-dim);color:var(--blue);border:1px solid rgba(122,164,198,0.25)}
 .out-body{
   flex:1;padding:16px;
@@ -268,7 +254,7 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
   overflow-y:auto;
   white-space:pre-wrap;word-break:break-word;
   scrollbar-width:thin;
-  scrollbar-color:var(--line2) transparent;
+  scrollbar-color:var(--text3) transparent;
   min-height:0;
   resize:none;border:none;outline:none;background:transparent;
   width:100%;
@@ -288,10 +274,10 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
   transition:all .13s var(--ease);letter-spacing:.04em;text-transform:uppercase;
 }
 .act-btn:active{transform:scale(.95)}
-.ab-ghost{background:none;border-color:var(--line2);color:var(--text3)}
-.ab-ghost:hover{border-color:var(--text2);color:var(--text)}
-.ab-gold{background:var(--accent-dim2);border-color:rgba(201,162,74,0.45);color:var(--accent)}
-.ab-gold:hover{background:rgba(201,162,74,0.24)}
+.ab-ghost{background:none;border-color:var(--text3);color:var(--text3)}
+.ab-ghost:hover{border-color:var(--text);color:var(--text)}
+.ab-gold{background:var(--accent-dim2);border-color:rgba(176,53,32,0.45);color:var(--accent)}
+.ab-gold:hover{background:rgba(176,53,32,0.24)}
 .ab-blue{background:rgba(122,164,198,0.10);border-color:rgba(122,164,198,0.35);color:var(--blue)}
 .ab-blue:hover{background:rgba(122,164,198,0.2)}
 .ab-green{background:rgba(132,180,124,0.10);border-color:rgba(132,180,124,0.35);color:var(--green)}
@@ -312,38 +298,52 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 .pblock-head{
   padding:8px 12px;border-bottom:1px solid var(--line);
   font-size:16px;font-weight:500;color:var(--text3);
-  letter-spacing:.1em;text-transform:uppercase;font-family:var(--mono);
+  letter-spacing:.1em;text-transform:uppercase;font-family:var(--sans);
 }
 .pblock-body{padding:10px 12px}
+.preprod-btns{display:flex;flex-wrap:wrap;gap:6px}
+.preprod-btns .ghost-btn{font-size:14px;padding:4px 10px}
+.preprod-pane{flex:1;display:flex;flex-direction:column;padding:16px;min-height:0;gap:10px}
+.zh-p{display:inline}
+.en-p{display:none}
+body.en-mode .zh-p{display:none}
+body.en-mode .en-p{display:inline}
+.lang-btn{
+  margin-left:auto;flex-shrink:0;
+  padding:4px 13px;border:1px solid var(--line);border-radius:20px;
+  background:none;color:var(--text3);font-size:13px;cursor:pointer;
+  font-family:var(--sans);letter-spacing:.05em;transition:all .15s;
+}
+.lang-btn:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 .save-row{display:flex;gap:6px}
 .save-input{
-  flex:1;background:transparent;border:1px solid var(--line2);
-  border-radius:2px;padding:6px 12px;
+  flex:1;background:transparent;border:1px solid var(--text3);
+  border-radius:var(--r);padding:6px 12px;
   color:var(--text);font-size:16px;font-family:var(--sans);outline:none;
   transition:border-color .13s;
 }
-.save-input:focus{border-color:rgba(201,162,74,0.45)}
+.save-input:focus{border-color:rgba(176,53,32,0.45)}
 .save-input::placeholder{color:var(--text3)}
 .saved-list{margin-top:8px;display:flex;flex-direction:column;gap:2px}
 @keyframes si-in{from{opacity:0;transform:translateX(-4px)}to{opacity:1}}
 .si{
   display:flex;align-items:center;gap:7px;
-  padding:6px 8px;border-radius:2px;
+  padding:6px 8px;border-radius:4px;
   transition:background .12s;
   animation:si-in .15s var(--ease);
 }
 .si:hover{background:var(--surface2)}
 .si-dot{width:4px;height:4px;border-radius:50%;background:var(--accent);opacity:.4;flex-shrink:0}
-.si-name{flex:1;font-size:16px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.si-name{flex:1;font-size:16px;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .si-load{
   font-size:16px;font-weight:500;padding:2px 8px;
-  border-radius:2px;border:1px solid var(--line2);
+  border-radius:4px;border:1px solid var(--text3);
   background:none;color:var(--text3);cursor:pointer;font-family:var(--sans);
   transition:all .12s;letter-spacing:.04em;text-transform:uppercase;
 }
 .si-load:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-dim)}
 .si-del{
-  width:20px;height:20px;border-radius:2px;
+  width:20px;height:20px;border-radius:4px;
   border:none;background:none;color:var(--text3);
   cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;
   transition:background .12s,color .12s;
@@ -353,29 +353,41 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 .preset-list{display:flex;flex-direction:column;gap:3px}
 .pset{
   display:flex;align-items:center;justify-content:space-between;
-  padding:8px 12px;border-radius:2px;
+  padding:8px 12px;border-radius:6px;
   background:transparent;border:1px solid transparent;
   color:var(--text3);font-size:16px;font-weight:400;
   cursor:pointer;font-family:var(--sans);text-align:left;
   transition:all .13s var(--ease);letter-spacing:.01em;
 }
-.pset:hover{background:var(--accent-dim);border-color:rgba(201,162,74,0.2);color:var(--accent);transform:translateX(2px)}
+.pset:hover{background:var(--accent-dim);border-color:rgba(176,53,32,0.2);color:var(--accent);transform:translateX(2px)}
 .pset:active{transform:scale(.98)}
 .pset.reset:hover{background:var(--red-dim);border-color:rgba(196,116,94,0.2);color:var(--red)}
 .ptag{
-  font-size:16px;font-weight:500;padding:2px 6px;border-radius:1px;
+  font-size:16px;font-weight:500;padding:2px 6px;border-radius:4px;
   background:transparent;color:var(--text3);
-  border:1px solid var(--line2);flex-shrink:0;
+  border:1px solid var(--text3);flex-shrink:0;
   text-transform:uppercase;
 }
+
+/* ─── Video-only sections ─── */
+.section-video-only{transition:opacity .25s var(--ease),filter .25s var(--ease)}
+.section-video-only.dimmed{opacity:.25;pointer-events:none;filter:saturate(0)}
+.sec-video-badge{
+  font-size:11px;font-weight:500;padding:1px 5px;border-radius:4px;
+  background:var(--blue-dim);color:var(--blue);
+  border:1px solid rgba(122,164,198,0.3);
+  font-family:var(--mono);text-transform:uppercase;letter-spacing:.06em;
+  vertical-align:middle;
+}
+
 
 /* ─── Toast ─── */
 .toast{
   position:fixed;bottom:20px;left:50%;z-index:100;
   transform:translateX(-50%) translateY(10px);
   background:var(--surface2);color:var(--text);
-  border:1px solid var(--line2);
-  padding:7px 16px;border-radius:2px;
+  border:1px solid var(--text3);
+  padding:7px 16px;border-radius:var(--r);
   font-size:16px;font-weight:400;
   pointer-events:none;opacity:0;
   transition:opacity .18s var(--ease),transform .18s var(--ease);
@@ -391,85 +403,81 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
   <a class="logo-name"style="text-decoration:none;color:inherit">CinePrompt</a>
   <div class="hd-sep"></div>
   <span class="logo-sub">AI prompt generator for Nano Banana Pro/2, GPT Image-2, and Seedance 2</span>
+  <button class="lang-btn" id="lang-btn" onclick="toggleLang()">EN</button>
 </header>
 
 <div class="app">
 <!-- ═══ LEFT ═══ -->
 <div class="left">
 
-  <div class="stats">
-    <div class="stat" id="st-scene"><div class="stat-l">場景 Scene</div><div class="stat-v" id="sv-scene">—</div></div>
-    <div class="stat" id="st-camera"><div class="stat-l">攝影機 Camera</div><div class="stat-v" id="sv-camera">—</div></div>
-    <div class="stat" id="st-lens"><div class="stat-l">鏡頭 Lens</div><div class="stat-v" id="sv-lens">—</div></div>
-    <div class="stat" id="st-focal"><div class="stat-l">焦距 Focal</div><div class="stat-v" id="sv-focal">—</div></div>
-    <div class="stat" id="st-grid"><div class="stat-l">格式 Grid</div><div class="stat-v" id="sv-grid">1×1</div></div>
-  </div>
-
-  <div class="field">
-    <div class="field-label">主體描述 Subject Description</div>
-    <input class="text-input" id="subject" type="text" placeholder="e.g. a woman walking through rain-soaked alley at night..." />
-  </div>
-
-  <div class="field">
-    <div class="field-label" style="display:flex;justify-content:space-between;align-items:center">
-      <span>補充內容 Extra Notes</span>
+  <div class="left-sticky">
+    <div class="field" style="margin-bottom:0">
+      <div class="field-label"><span class="zh-p">描述 </span>Description</div>
+      <textarea class="text-input" id="subject" rows="3" placeholder="描述主體、場景與任何限制條件... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic" style="resize:vertical;line-height:1.5;min-height:68px"></textarea>
     </div>
-    <textarea class="text-input" id="extra" rows="2" placeholder="e.g. no people in background, shot in Tokyo, 1990s aesthetic, 35mm film grain..." style="resize:vertical;line-height:1.5;min-height:52px"></textarea>
   </div>
 
   <div class="tabs" id="tab-bar">
-    <button class="tab active" onclick="switchTab('visual',this)">視覺 Visual</button>
-    <button class="tab" onclick="switchTab('shot',this)">景別 Shot</button>
-    <button class="tab" onclick="switchTab('director',this)">導演 Director</button>
-    <button class="tab" onclick="switchTab('timeline',this)">時間碼 Timeline</button>
+    <button class="tab active" onclick="switchTab('visual',this)"><span class="zh-p">視覺 </span>Visual</button>
+    <button class="tab" onclick="switchTab('shot',this)"><span class="zh-p">景別 </span>Shot</button>
+    <button class="tab" id="tab-timeline" onclick="switchTab('timeline',this)"><span class="zh-p">時間碼 </span>Timeline <span class="sec-video-badge">VIDEO</span></button>
+    <button class="tab" id="tab-director" onclick="switchTab('director',this)"><span class="zh-p">導演 </span>Director</button>
   </div>
 
   <!-- Visual -->
   <div class="tab-pane active" id="pane-visual">
-    <div class="section"><div class="sec-label">場景類型 Scene Type</div><div class="chips" id="g-scene"></div></div>
-    <div class="section"><div class="sec-label">攝影機 / 色彩 Camera / Color</div><div class="chips" id="g-camera"></div></div>
-    <div class="section"><div class="sec-label">鏡頭特性 Lens Character</div><div class="chips" id="g-lens"></div></div>
-    <div class="section"><div class="sec-label">焦距 Focal Length</div><div class="chips" id="g-focal"></div></div>
-    <div class="section"><div class="sec-label">光圈景深 Aperture / DoF</div><div class="chips" id="g-aperture"></div></div>
-    <div class="section"><div class="sec-label">色調風格 Color Grade / LUT</div><div class="chips" id="g-lut"></div></div>
-    <div class="section"><div class="sec-label">燈光 Lighting</div><div class="chips" id="g-light"></div></div>
-
     <div class="section">
-      <div class="sec-label">輸出格式 Grid Layout</div>
-      <div class="chips" id="g-grid"></div>
-      <div id="grid-note" style="display:none;margin-top:8px;font-size:11px;color:var(--text3);line-height:1.6;padding:8px 10px;background:var(--surface2);border-radius:2px;border-left:2px solid var(--accent)"></div>
+      <div class="sec-label"><span class="zh-p">類型 </span>Type</div>
+      <div class="chips">
+        <div id="g-scene" style="display:contents"></div>
+        <div id="g-skin" style="display:contents"></div>
+        <div id="g-grid" style="display:contents"></div>
+      </div>
     </div>
+    <div class="section"><div class="sec-label"><span class="zh-p">攝影機 </span>Camera</div><div class="chips" id="g-camera"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">鏡頭 </span>Lens</div><div class="chips" id="g-lens"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">焦距 </span>Focal Length</div><div class="chips" id="g-focal"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">光圈 </span>Aperture / DoF</div><div class="chips" id="g-aperture"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">色調 </span>Color Grade / LUT</div><div class="chips" id="g-lut"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">燈光 </span>Lighting</div><div class="chips" id="g-light"></div></div>
   </div>
 
   <!-- Shot -->
   <div class="tab-pane" id="pane-shot">
-    <div class="section"><div class="sec-label">景別尺寸 Shot Size</div><div class="chips" id="g-shotsize"></div></div>
-    <div class="section"><div class="sec-label">關係構圖 Relationship Shot</div><div class="chips" id="g-relation"></div></div>
-    <div class="section"><div class="sec-label">攝影機角度 Camera Angle</div><div class="chips" id="g-angle"></div></div>
-    <div class="section"><div class="sec-label">攝影機運動 Camera Movement</div><div class="chips" id="g-motion"></div></div>
-    <div class="section"><div class="sec-label">速度修飾 Speed Modifier</div><div class="chips" id="g-speed"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">景別尺寸 </span>Shot Size</div><div class="chips" id="g-shotsize"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">人物關係 </span>Relationship</div><div class="chips" id="g-relation"></div></div>
+    <div class="section"><div class="sec-label"><span class="zh-p">攝影機角度 </span>Camera Angle</div><div class="chips" id="g-angle"></div></div>
+    <div class="section section-video-only dimmed" id="sec-motion"><div class="sec-label"><span class="zh-p">攝影機運動 </span>Camera Movement <span class="sec-video-badge">VIDEO</span></div><div class="chips" id="g-motion"></div></div>
+    <div class="section section-video-only dimmed" id="sec-speed"><div class="sec-label"><span class="zh-p">速度節奏 </span>Speed <span class="sec-video-badge">VIDEO</span></div><div class="chips" id="g-speed"></div></div>
   </div>
 
   <!-- Director -->
   <div class="tab-pane" id="pane-director">
-    <div class="notice"><strong>導演風格模式 Director Style：</strong>套用完整視覺語言（鏡頭 Lens ／色彩 Color ／運動 Movement），建議單獨使用。</div>
-    <div class="section"><div class="sec-label">選擇導演 Select Director</div><div class="chips" id="g-director"></div></div>
+    <div class="notice">
+      <span class="zh-p"><strong>導演風格模式 Director Style：</strong>套用完整視覺語言（鏡頭 Lens ／色彩 Color ／運動 Movement），建議單獨使用。</span>
+      <span class="en-p"><strong>Director Style Mode:</strong> Applies a complete visual language (Lens / Color / Movement). Best used alone.</span>
+    </div>
+    <div class="section"><div class="sec-label"><span class="zh-p">選擇導演 </span>Select Director</div><div class="chips" id="g-director"></div></div>
   </div>
 
   <!-- Timeline -->
   <div class="tab-pane" id="pane-timeline">
-    <div class="notice"><strong>時間碼多鏡頭 Time-coded Multi-shot：</strong>在單次 15s 生成中導演個別鏡頭。結果輸出到 Seedance 2。<br>每段：景別 Shot ＋ 動作 Action ＋ 燈光 Lighting。轉場用 "hard cut to" 或 "seamless morph into"。</div>
+    <div class="notice">
+      <span class="zh-p"><strong>時間碼多鏡頭 Time-coded Multi-shot：</strong>在單次 15s 生成中導演個別鏡頭。結果輸出到 Seedance 2。<br>每段：景別 Shot ＋ 動作 Action ＋ 燈光 Lighting。轉場用 "hard cut to" 或 "seamless morph into"。</span>
+      <span class="en-p"><strong>Time-coded Multi-shot:</strong> Direct individual shots within a single 15s generation. Output goes to Seedance 2.<br>Each shot: Shot Size + Action + Lighting. Use "hard cut to" or "seamless morph into" for transitions.</span>
+    </div>
     <div class="tl-box" id="tl-area"><div style="font-size:16px;color:var(--text3);padding:2px 0">尚無鏡頭段 / No shots yet — add below</div></div>
     <div class="tl-actions">
-      <button class="ghost-btn" onclick="addShot()">＋ 新增鏡頭段 Add Shot</button>
-      <button class="ghost-btn" onclick="clearTL()">清除 Clear All</button>
+      <button class="ghost-btn" onclick="addShot()">＋ <span class="zh-p">新增鏡頭段 </span>Add Shot</button>
+      <button class="ghost-btn" onclick="clearTL()"><span class="zh-p">清除 </span>Clear All</button>
     </div>
     <div class="section">
-      <div class="sec-label">15秒模板 15s Templates</div>
+      <div class="sec-label"><span class="zh-p">15秒模板 </span>15s Templates</div>
       <div class="chips">
-        <button class="chip" onclick="applyTLT('climax')">高潮弧線 Climax Arc</button>
-        <button class="chip" onclick="applyTLT('product')">產品廣告 Product Ad</button>
-        <button class="chip" onclick="applyTLT('action')">動作序列 Action</button>
+        <button class="chip" onclick="applyTLT('rapid')"><span class="zh-p">快剪 </span>Rapid Fire 5s×20</button>
+        <button class="chip" onclick="applyTLT('climax')"><span class="zh-p">高潮弧線 </span>Climax Arc</button>
+        <button class="chip" onclick="applyTLT('product')"><span class="zh-p">產品廣告 </span>Product Ad</button>
+        <button class="chip" onclick="applyTLT('action')"><span class="zh-p">動作序列 </span>Action</button>
       </div>
     </div>
   </div>
@@ -481,9 +489,10 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 
   <!-- Right Tab Bar -->
   <div class="right-tabs">
-    <button class="rtab active" onclick="switchRTab('image',this)">圖像 Image</button>
-    <button class="rtab" onclick="switchRTab('video',this)">影片 Video</button>
-    <button class="rtab" onclick="switchRTab('saved',this)">收藏 Saved</button>
+    <button class="rtab active" onclick="switchRTab('image',this)"><span class="zh-p">圖像 </span>Image</button>
+    <button class="rtab" id="rtab-video" onclick="switchRTab('video',this)"><span class="zh-p">影片 </span>Video</button>
+    <button class="rtab" onclick="switchRTab('saved',this)"><span class="zh-p">收藏 </span>Saved</button>
+    <button class="rtab" onclick="switchRTab('preprod',this)"><span class="zh-p">前製範本 </span>Pre-Prod</button>
   </div>
 
   <!-- Image Tab -->
@@ -529,7 +538,7 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
       <div class="out-footer">
         <div class="spacer"></div>
         <button class="act-btn ab-ghost" onclick="clearOut('seed')">Clear</button>
-                <button class="act-btn ab-red" onclick="doCopy('seed')">Copy</button>
+        <button class="act-btn ab-red" onclick="doCopy('seed')">Copy</button>
       </div>
     </div>
   </div>
@@ -539,7 +548,7 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
     <div class="side-panel">
       <!-- Save form -->
       <div class="panel-block">
-        <div class="pblock-head">收藏組合 Saved Presets</div>
+        <div class="pblock-head"><span class="zh-p">收藏組合 </span>Saved Presets</div>
         <div class="pblock-body">
           <div class="save-row">
             <input class="save-input" id="save-name" placeholder="命名組合 Name preset..." />
@@ -551,18 +560,37 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
       </div>
       <!-- Quick presets -->
       <div class="panel-block">
-        <div class="pblock-head">快速預設 Quick Presets</div>
+        <div class="pblock-head"><span class="zh-p">快速預設 </span>Quick Presets</div>
         <div class="pblock-body">
           <div class="preset-list">
-            <button class="pset" onclick="applyPreset('portrait')">人像 Portrait <span class="ptag">ARRI · 85mm · f/2.8</span></button>
-            <button class="pset" onclick="applyPreset('street')">街拍 Street <span class="ptag">Fuji · 35mm · Overcast</span></button>
-            <button class="pset" onclick="applyPreset('noir')">黑色電影 Noir <span class="ptag">ARRI Flex · 50mm</span></button>
-            <button class="pset" onclick="applyPreset('epic')">史詩廣角 Epic <span class="ptag">IMAX · 18mm · Volumetric</span></button>
-            <button class="pset" onclick="applyPreset('fuji')">富士冷調 Fuji Cool <span class="ptag">Eterna · 35mm</span></button>
-            <button class="pset" onclick="applyPreset('wkw')">王家衛 Wong Kar-wai <span class="ptag">Director</span></button>
-            <button class="pset reset" onclick="doClear()">清除全部 Clear All <span class="ptag">Reset</span></button>
+            <button class="pset" onclick="applyPreset('portrait')"><span class="zh-p">人像 </span>Portrait <span class="ptag">ARRI · 85mm · f/2.8</span></button>
+            <button class="pset" onclick="applyPreset('street')"><span class="zh-p">街拍 </span>Street <span class="ptag">Fuji · 35mm · Overcast</span></button>
+            <button class="pset" onclick="applyPreset('noir')"><span class="zh-p">黑色電影 </span>Noir <span class="ptag">ARRI Flex · 50mm</span></button>
+            <button class="pset" onclick="applyPreset('epic')"><span class="zh-p">史詩廣角 </span>Epic <span class="ptag">IMAX · 18mm · Volumetric</span></button>
+            <button class="pset" onclick="applyPreset('fuji')"><span class="zh-p">富士冷調 </span>Fuji Cool <span class="ptag">Eterna · 35mm</span></button>
+            <button class="pset reset" onclick="doClear()"><span class="zh-p">清除全部 </span>Clear All <span class="ptag">Reset</span></button>
           </div>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pre-Prod Tab -->
+  <div class="rtab-pane" id="rpane-preprod">
+    <div class="preprod-pane">
+      <div class="pblock-head"><span class="zh-p">前期製作範本 </span>Pre-Production</div>
+      <div class="preprod-btns">
+        <button class="ghost-btn" onclick="genPreprod('moodboard')"><span class="zh-p">氛圍板 </span>Mood Board</button>
+        <button class="ghost-btn" onclick="genPreprod('chardesign')"><span class="zh-p">角色設計 </span>Character Design</button>
+        <button class="ghost-btn" onclick="genPreprod('masterstory')"><span class="zh-p">總覽九宮格 </span>Master Storyboard</button>
+        <button class="ghost-btn" onclick="genPreprod('scenestory')"><span class="zh-p">場景分鏡 </span>Scene Coverage</button>
+        <button class="ghost-btn" onclick="genPreprod('chargrid')"><span class="zh-p">角色參考格 </span>Char Ref Grid</button>
+        <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">場景參考格 </span>Scene Grid</button>
+      </div>
+      <textarea class="out-body" id="out-preprod" spellcheck="false" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r);padding:12px;resize:none" placeholder="點選上方按鈕生成前期製作 prompt。所有範本會自動套用左側已選的樣式設定。&#10;Click a template above — style settings from the left panel are applied automatically."></textarea>
+      <div style="display:flex;gap:6px;justify-content:flex-end;flex-shrink:0">
+        <button class="act-btn ab-ghost" onclick="document.getElementById('out-preprod').value='';toast(_('已清除','Cleared'))">Clear</button>
+        <button class="act-btn ab-red" onclick="doCopy('preprod')">Copy</button>
       </div>
     </div>
   </div>
@@ -581,11 +609,9 @@ const DB={
     {l:'動作 Action',v:'action',nano:'dynamic action shot, motion energy',gpt:'dynamic action shot',seed:'dynamic action sequence'},
     {l:'產品 Product',v:'product',nano:'luxury product commercial, studio photography',gpt:'luxury product commercial photography',seed:'product hero shot'},
     {l:'紀錄 Documentary',v:'doc',nano:'documentary photography, observational style',gpt:'documentary photography style',seed:'documentary observational scene'},
-    {l:'2D 動畫 2D Animation',v:'anim2d',nano:'Create a 2D animated scene',gpt:'2D animated illustration scene',seed:'2D animation style sequence'},
-    {l:'3D 動畫 3D Animation',v:'anim3d',nano:'Render a 3D animated scene',gpt:'3D CGI animated scene, studio quality',seed:'3D CGI animation sequence'},
+    {l:'2D 動畫 2D Animation',le:'2D Animation',v:'anim2d',nano:'Create a 2D animated scene',gpt:'2D animated illustration scene',seed:'2D animation style sequence'},
+    {l:'3D 動畫 3D Animation',le:'3D Animation',v:'anim3d',nano:'Render a 3D animated scene',gpt:'3D CGI animated scene, studio quality',seed:'3D CGI animation sequence'},
     {l:'手繪動畫 Hand-drawn',v:'animhand',nano:'Illustrate a hand-drawn animation frame',gpt:'hand-drawn animation style, expressive ink lines',seed:'hand-drawn animation style'},
-    {l:'賽璐璐 Cel Animation',v:'animcel',nano:'Draw a cel animation style frame',gpt:'classic cel animation style, flat colors, bold outlines',seed:'cel animation flat color style'},
-    {l:'像素 Pixel Art',v:'pixel',nano:'Design a pixel art scene',gpt:'pixel art style, 16-bit retro game aesthetic',seed:'pixel art retro 16-bit style'},
     {l:'概念藝術 Concept Art',v:'concept',nano:'Paint a concept art scene',gpt:'concept art illustration, digital painting, detailed environment',seed:'concept art digital painting'},
     {l:'角色多視圖 Character Sheet',v:'charsheet',nano:'Create a character reference sheet showing the same character from multiple angles',gpt:'character reference sheet, multiple views of the same character: front, side, back, 3/4 angle, consistent design throughout, white background, professional illustration style',seed:'character reference sheet multiple angles'},
   ],
@@ -629,7 +655,7 @@ const DB={
     {l:'f/2 淺景深，柔和背景分離',v:'f2',nano:'f/2 shallow depth, soft background',gpt:'f/2 aperture, shallow depth of field, soft background separation',seed:'f/2 shallow depth of field'},
     {l:'f/2.8 淺至中景深，電影感',v:'f28',nano:'f/2.8 cinematic shallow-medium depth',gpt:'f/2.8 aperture, shallow to medium depth of field, cinematic bokeh',seed:'f/2.8 cinematic depth of field'},
     {l:'f/4 適中景深，人物加環境',v:'f4',nano:'f/4 moderate depth of field',gpt:'f/4 moderate aperture, balanced depth of field',seed:'f/4 moderate depth of field'},
-    {l:'f/8 全清晰，前後景均銳',v:'f8',nano:'f/8 deep focus, full scene sharpness',gpt:'f/8 aperture, deep focus, full scene sharpness',seed:'f/8 deep focus, full scene sharp'},
+    {l:'f/8 全清晰，前後景皆銳',v:'f8',nano:'f/8 deep focus, full scene sharpness',gpt:'f/8 aperture, deep focus, full scene sharpness',seed:'f/8 deep focus, full scene sharp'},
     {l:'f/16 超深景深，一切清晰',v:'f16',nano:'f/16 pan focus, everything sharp',gpt:'f/16 narrow aperture, everything in focus',seed:'f/16, everything in focus'},
   ],
   lut:[
@@ -697,22 +723,27 @@ const DB={
     {l:'Steadicam 穩定器流暢跟拍',v:'steady',seed:'smooth steadicam forward walk following character through space'},
     {l:'Handheld 手持輕微晃動感',v:'hand',seed:'handheld camera, subtle natural shake, documentary feel'},
     {l:'Crane Up 吊臂大範圍上升',v:'crane',seed:'crane up reveal, camera rises to show full environment'},
-    {l:'FPV 無人機第一視角俯衝',v:'fpv',seed:'FPV drone dive, first-person high-speed flight through space'},
-    {l:'Whip Pan 高速水平甩動鏡',v:'whip',seed:'whip pan, rapid horizontal sweep transition'},
-    {l:'Dolly Zoom 背景變形眩暈感',v:'dzoom',seed:'dolly zoom Vertigo effect, background warps while subject stays constant size'},
-    {l:'Rack Focus 從前景拉焦到後景',v:'rack',seed:'rack focus from foreground to background, attention redirects'},
+    {l:'FPV 無人機高速俯衝',v:'fpv',seed:'FPV drone dive, first-person high-speed flight through space'},
+    {l:'急搖 Whip Pan',v:'whip',seed:'whip pan, rapid horizontal sweep transition'},
+    {l:'眩暈變焦 Dolly Zoom',v:'dzoom',seed:'dolly zoom Vertigo effect, background warps while subject stays constant size'},
+    {l:'拉焦 Rack Focus',v:'rack',seed:'rack focus from foreground to background, attention redirects'},
   ],
   speed:[
-    {l:'Imperceptible 幾乎察覺不到的移動',v:'imp',seed:'imperceptible movement, barely noticeable drift'},
-    {l:'Slow 緩慢柔和移動',v:'slow',seed:'slow gentle movement'},
-    {l:'Smooth 流暢穩定移動',v:'smooth',seed:'smooth controlled motion'},
-    {l:'Slow Mo 慢動作，時間感延伸',v:'slomo',seed:'slow motion, time dramatically slows, enhanced detail'},
-    {l:'Speed Ramp 慢動作接全速動態',v:'ramp',seed:'dynamic speed ramp, slow motion transitioning to full speed'},
+    {l:'微幅 Imperceptible',v:'imp',seed:'imperceptible movement, barely noticeable drift'},
+    {l:'緩速 Slow',v:'slow',seed:'slow gentle movement'},
+    {l:'流暢 Smooth',v:'smooth',seed:'smooth controlled motion'},
+    {l:'慢動作 Slow-Mo',v:'slomo',seed:'slow motion, time dramatically slows, enhanced detail'},
+    {l:'斜坡變速 Speed Ramp',v:'ramp',seed:'dynamic speed ramp, slow motion transitioning to full speed'},
+  ],
+  skin:[
+    {l:'人物寫實皮膚質感',le:'Realistic Skin',v:'skin',
+     nano:'real human skin with visible pores, natural color variation, subsurface scattering, slight oil sheen on T-zone, fine peach-fuzz, no beauty filter, natural imperfections, no plastic-smooth skin',
+     gpt:'real human skin texture: visible pores of varied size, natural color variation, subsurface light scattering, realistic oil distribution, fine peach-fuzz catching directional light, natural imperfections, no airbrushing, no plastic-smooth skin, no smoothing',
+     seed:'photorealistic skin texture, visible pores, subsurface scattering, no airbrushing, no smoothing'},
   ],
   grid:[
-    {l:'1×1 單張圖像',v:'1x1',cols:1,rows:1,note:'預設單張'},
-    {l:'2×2 四格，角色多角度',v:'2x2',cols:2,rows:2,note:'角色多角度 / 情緒板'},
-    {l:'3×3 分鏡九格',v:'3x3',cols:3,rows:3,note:'15秒完整分鏡 → 建議用 GPT Image-2'},
+    {l:'2×2 四格',le:'2×2',v:'2x2',cols:2,rows:2},
+    {l:'3×3 九格',le:'3×3',v:'3x3',cols:3,rows:3},
   ],
   director:[
     {l:'王家衛 Wong Kar-wai',v:'wkw',nano:'Wong Kar-wai style — handheld shallow focus, saturated neon palette, 21mm lens distortion, practical light sources, step-printed motion blur, rain-wet surfaces',sig:'Wong Kar-wai style — handheld shallow focus, saturated neon palette, 21mm lens distortion, practical light sources, step-printed motion blur, rain-wet surfaces, cinematic Hong Kong night aesthetic'},
@@ -723,15 +754,45 @@ const DB={
     {l:'奉俊昊 Bong Joon-ho',v:'bjh',nano:'Bong Joon-ho style — wide social observation framing, desaturated class-coded palette, naturalistic Seoul',sig:'Bong Joon-ho style — wide social observation framing, desaturated palette with class color coding, naturalistic Seoul aesthetic, genre-fluid composition, vertical architecture as metaphor'},
     {l:'Roger Deakins 掌鏡',v:'deakins',nano:'Roger Deakins style — motivated single-source naturalistic lighting, silhouette architecture, precise composition',sig:'Roger Deakins style — motivated single-source naturalistic lighting, silhouette and shadow architecture, precise composition, cinematography in service of character, no artificial light visible'},
     {l:'Sofia Coppola',v:'sofia',nano:'Sofia Coppola style — 85mm telephoto intimacy, overexposed natural light, blush and gold palette',sig:'Sofia Coppola style — 85mm telephoto intimacy, overexposed natural light, blush and gold palette, impressionistic composition, female interiority, quiet beauty in stasis'},
+    {l:'Stanley Kubrick',v:'kubrick',nano:'Stanley Kubrick style — one-point perspective symmetry, cool tungsten light, slow deliberate zoom, deep focus 2.35:1',sig:'Stanley Kubrick style — obsessive one-point perspective with subjects dead-center, cool tungsten or natural lighting, deep focus keeping foreground and background sharp, slow deliberate zoom, 2.35:1 aspect ratio, geometric architectural framing, controlled dolly movements, long corridors and symmetrical rooms'},
+    {l:'David Fincher',v:'fincher',nano:'David Fincher style — teal-dominated shadows, crushed blacks, locked-down precision, desaturated clinical digital grade',sig:'David Fincher style — teal shadows with warm skin highlights, crushed deep blacks, locked-down or fluid Steadicam movements, meticulous symmetrical lighting, desaturated clinical digital grade, precise geometric composition, high key-to-fill ratio, everything deliberate and controlled'},
+    {l:'Terrence Malick',v:'malick',nano:'Terrence Malick style — golden hour backlight, handheld lyric camera drifting through nature, warm amber-orange palette',sig:'Terrence Malick style — extensive backlighting during golden and magic hour, handheld camera drifting through natural environments, warm amber-orange-gold color grade, shallow depth of field, flowing movement through grass and water, whispered subjective POV framing, sky and light as emotional protagonist'},
+    {l:'張藝謀 Zhang Yimou',v:'zhangyimou',nano:'張藝謀 Zhang Yimou style — saturated primary color blocks, bold reds and blacks, high-key operatic lighting, classical Chinese spatial composition',sig:'張藝謀 Zhang Yimou style — intensely saturated primary colors filling entire frames, deep red and gold dominant palette, high-key evenly lit scenes, bold geometric compositions from classical Chinese visual tradition, wide master shots with human figures as graphic design elements, vivid color symbolism'},
+    {l:'黑澤明 Kurosawa',v:'kurosawa',nano:'黑澤明 Kurosawa style — telephoto deep focus, diagonal compositions, weather as dramatic actor, strong shadow separation',sig:'黑澤明 Kurosawa style — deep focus telephoto lenses keeping foreground and background sharp, diagonal compositions creating visual tension, weather elements (rain, wind, fog) as dramatic participants, strong highlight-shadow separation, widescreen framing with multiple focal planes, nature as emotional backdrop'},
+    {l:'Barry Jenkins',v:'barryjenkins',nano:'Barry Jenkins style — warm amber skin luminosity, tender handheld intimacy, Moonlight blue atmosphere, intentional lens flares',sig:'Barry Jenkins style — warm amber and golden light celebrating skin luminosity, intimate handheld camera at eye level or below, selective color grading shifting between warm amber and deep Moonlight blues, intentional lens flares and chromatic artifacts, shallow focus on human faces, deep empathy in framing'},
+    {l:'Yorgos Lanthimos',v:'lanthimos',nano:'Yorgos Lanthimos style — ultra-wide lens distortion, centered framing, cool desaturated palette, clinical even light',sig:'Yorgos Lanthimos style — wide-angle to ultra-wide lenses creating subtle spatial distortion, strict centered composition, cool desaturated pale palette, high-key even lighting with minimal shadows, architecturally precise symmetrical framing, static or slowly circling camera, subjects confronting the viewer directly'},
+    {l:'David Lynch',v:'lynch',nano:'David Lynch style — deep red velvet textures, high-contrast noir light pools, surreal industrial atmosphere, crimson darkness',sig:'David Lynch style — iconic deep red tones against impenetrable black shadows, theatrical practical lighting from industrial or vintage fixtures, wide-angle lenses with slight spatial distortion, surreal atmosphere from ordinary dark environments, pools of warm light surrounded by darkness, mysterious architectural symmetry, dread in the mundane'},
   ],
 };
 
 const TL={
+  rapid:[
+    {t:'0.0–0.25s',d:'[WORLD] WS static — environment before subject arrives. No person yet. Let viewer find their bearings.'},
+    {t:'0.25–0.5s',d:'[ENTER] FS static — subject enters or is revealed in frame. Full body. Establish their presence.'},
+    {t:'0.5–0.75s',d:'[FACE] MCU static — first read of subject\'s face. What emotion are they carrying into this moment?'},
+    {t:'0.75–1.0s',d:'[DETAIL] ECU static — one physical detail: hands, eyes, a scar, a held object. What do they carry?'},
+    {t:'1.0–1.25s',d:'[STAKES] WS slow push — world around subject. Something else is present. Stakes become visible.'},
+    {t:'1.25–1.5s',d:'[THREAT] Low angle MS — camera looks up at subject or opposing force. Power shifts in frame.'},
+    {t:'1.5–1.75s',d:'[OBJECT] Insert static — key prop in tight frame. This thing will matter. Show it alone.'},
+    {t:'1.75–2.0s',d:'[REACT] CU static — face processes what we just showed. Micro-expression. No overacting.'},
+    {t:'2.0–2.25s',d:'[RESET] WS static — pull back to full picture. How big is this problem? How alone are they?'},
+    {t:'2.25–2.5s',d:'[WITNESS] OTS — over subject\'s shoulder looking at something. What are they facing?'},
+    {t:'2.5–2.75s',d:'[PEAK] ECU eyes — maximum emotional intensity. Hold this frame. This is the image.'},
+    {t:'2.75–3.0s',d:'[CONFRONTATION] Two-shot static — both forces share frame. Relationship locked in space.'},
+    {t:'3.0–3.25s',d:'[ACTION] MS tracking — subject moves. Camera follows. First real motion in the sequence.'},
+    {t:'3.25–3.5s',d:'[CONSEQUENCE] CU — impact on face or body. What did that cost them?'},
+    {t:'3.5–3.75s',d:'[SYMBOL] Insert — same prop from shot 7, new context. Its meaning has changed.'},
+    {t:'3.75–4.0s',d:'[SCALE] High angle WS — bird\'s eye view. Subject tiny against the world. Weight of it all.'},
+    {t:'4.0–4.25s',d:'[LAST IMAGE] ECU — the one detail that defines everything. What\'s the final image of this person?'},
+    {t:'4.25–4.5s',d:'[RESOLVE] MS — motion ends. Body language of decision, exhaustion, or acceptance.'},
+    {t:'4.5–4.75s',d:'[DISTANCE] WS slow pull-out — camera retreats. Subject and world become separate.'},
+    {t:'4.75–5.0s',d:'[END] WS static — final wide frame. Hold minimum 2 seconds. Let it breathe before cut.'},
+  ],
   climax:[
-    {t:'0-4s',d:'wide shot, static — 世界建立 world establish, 環境音 ambient sound'},
-    {t:'4-8s',d:'medium shot, slow push-in — 張力累積 tension builds, 主體準備 prepares'},
-    {t:'8-12s',d:'close-up — 情感高峰 emotional peak, one detail in sharp focus'},
-    {t:'12-15s',d:'extreme close-up, slow motion — 高潮動作 climax, emotional hold'},
+    {t:'0-4s',d:'wide shot, static — world establish, ambient sound'},
+    {t:'4-8s',d:'medium shot, slow push-in — tension builds, prepares'},
+    {t:'8-12s',d:'close-up — emotional peak, one detail in sharp focus'},
+    {t:'12-15s',d:'extreme close-up, slow motion — climax, emotional hold'},
   ],
   product:[
     {t:'0-3s',d:'macro shot, static — product on dark surface, shallow DoF, rim light on edges'},
@@ -756,15 +817,17 @@ const PRESETS={
   wkw:{director:'wkw'},
 };
 
-const STAT={scene:'sv-scene',camera:'sv-camera',lens:'sv-lens',focal:'sv-focal'};
+const MULTI_KEYS=new Set(['scene']);
 const S={};
 let shots=[];
+
 
 function switchTab(n,btn){
   document.querySelectorAll('#tab-bar .tab').forEach(t=>t.classList.remove('active'));
   document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('pane-'+n).classList.add('active');
+  if(n==='timeline') switchRTab('video',document.getElementById('rtab-video'));
   build();
 }
 
@@ -773,14 +836,22 @@ function switchRTab(n,btn){
   document.querySelectorAll('.rtab-pane').forEach(p=>p.classList.remove('active'));
   btn.classList.add('active');
   document.getElementById('rpane-'+n).classList.add('active');
+  const dimVideo=(n!=='video');
+  document.querySelectorAll('.section-video-only').forEach(s=>s.classList.toggle('dimmed',dimVideo));
+  document.getElementById('tab-timeline').classList.toggle('tab-video-dim',dimVideo);
+  if(n==='preprod' && lastPreprod) genPreprod(lastPreprod);
 }
 
 function makeGroup(gid,key,items){
   const c=document.getElementById(gid);if(!c)return;
   items.forEach(it=>{
     const b=document.createElement('button');
-    b.className=key==='director'?'chip dir':(key==='grid'?'chip grid-chip':'chip');
-    b.textContent=it.l;
+    b.className=key==='director'?'chip dir':'chip';
+    if(it.le){
+      b.innerHTML=`<span class="zh-p">${it.l}</span><span class="en-p">${it.le}</span>`;
+    } else {
+      b.innerHTML=it.l.replace(/([一-鿿]+)/g,'<span class="zh-p">$1</span>');
+    }
     b.dataset.v=it.v;
     if(it.note) b.title=it.note;
     b.onclick=()=>toggle(key,it,b,c);
@@ -789,38 +860,27 @@ function makeGroup(gid,key,items){
 }
 
 function toggle(key,item,btn,container){
-  const on=S[key]===item.v;
-  if(on){delete S[key];btn.classList.remove('on');}
-  else{S[key]=item.v;container.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
-  if(STAT[key]){
-    document.getElementById(STAT[key]).textContent=S[key]?item.l:'—';
-    document.getElementById('st-'+key).classList.toggle('lit',!!S[key]);
-  }
-  // Grid: update stat card and note
-  if(key==='grid'){
-    const sv=document.getElementById('sv-grid');
-    const st=document.getElementById('st-grid');
-    const note=document.getElementById('grid-note');
-    if(sv) sv.textContent=S[key]?item.l:'1×1';
-    if(st) st.classList.toggle('lit',!!S[key]);
-    if(note){
-      const notes={
-        '1x1':'單張輸出，適合人像、概念圖、產品圖。',
-        '2x2':'四格輸出，適合角色多角度、服裝對比、情緒板。Nano Banana Pro/2 角色一致性較強。',
-        '3x3':'九宮格分鏡，對應 15 秒影片場景。⚠️ 格局精準度建議優先使用 GPT Image-2（Nano Banana 可能出現混版）。'
-      };
-      if(S[key] && notes[S[key]] && S[key]!=='1x1'){
-        note.textContent=notes[S[key]];
-        note.style.display='block';
-      } else {
-        note.style.display='none';
-      }
-    }
+  if(MULTI_KEYS.has(key)){
+    if(!Array.isArray(S[key]))S[key]=[];
+    const idx=S[key].indexOf(item.v);
+    if(idx>=0){S[key].splice(idx,1);btn.classList.remove('on');if(!S[key].length)delete S[key];}
+    else{S[key].push(item.v);btn.classList.add('on');}
+  } else {
+    const on=S[key]===item.v;
+    if(on){delete S[key];btn.classList.remove('on');}
+    else{S[key]=item.v;container.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
   }
   build();
 }
 
-function gi(k){return S[k]?DB[k].find(i=>i.v===S[k]):null;}
+function gi(k){
+  if(Array.isArray(S[k]))return S[k].length?DB[k].find(i=>i.v===S[k][0]):null;
+  return S[k]?DB[k].find(i=>i.v===S[k]):null;
+}
+function giAll(k){
+  if(Array.isArray(S[k]))return S[k].map(v=>DB[k].find(i=>i.v===v)).filter(Boolean);
+  const it=gi(k);return it?[it]:[];
+}
 
 // Nano Banana: verb-first opener per scene type
 // Source: Google Cloud official prompting guide - "start with a strong verb"
@@ -851,18 +911,15 @@ function build(){
   // Director mode
   if(dir){
     const p=subj?subj+', ':'';
-    const extraDir=document.getElementById('extra').value.trim();
-    // Nano: conversational verb-first with director style
     const nanoDir = 'Photograph' + (p ? ' ' + p : '') + ' in the style of ' + (dir.nano||dir.sig) +
-      '. Photorealistic, natural rendering, no watermark' + (extraDir ? '. ' + extraDir : '') + '.';
-    // GPT: structured brief with director style
+      '. Photorealistic, natural rendering, no watermark.';
     const gptDir = (p ? p + '\n' : '') +
       dir.sig + '.\n' +
-      'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.' +
-      (extraDir ? '\n' + extraDir + '.' : '');
+      'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.';
     setOut('nano', nanoDir);
     setOut('gpt', gptDir);
-    setOut('seed',p+dir.sig+', avoid jitter, avoid bent limbs, avoid identity drift, sharp clarity, stable picture, no blur, no ghosting, no flickering'+(extraDir?', '+extraDir:''));
+    setOut('seed',p+dir.sig+', avoid jitter, avoid bent limbs, avoid identity drift, sharp clarity, stable picture, no blur, no ghosting, no flickering');
+    if(lastPreprod && document.getElementById('rpane-preprod').classList.contains('active')) genPreprod(lastPreprod);
     return;
   }
 
@@ -881,37 +938,43 @@ function build(){
     setOut('nano',gridPrompt);
     setOut('gpt',gridPrompt);
     setOut('seed',(subj?subj+', ':'')+(ss?ss+', ':'')+'\n'+tlLines+'\n'+con);
+    if(lastPreprod && document.getElementById('rpane-preprod').classList.contains('active')) genPreprod(lastPreprod);
     return;
   }
 
   // Normal mode
-  const np=[],gp=[],sp=[];
-  if(subj){np.push(subj);gp.push(subj);sp.push(subj);}
-  const sc=gi('scene');
-  if(sc){np.unshift(sc.nano||sc.gpt);gp.unshift(sc.gpt);sp.unshift(sc.seed);}
-  ['camera','lens','focal','aperture','lut','light'].forEach(k=>{
+  const np=[],sp=[];
+  if(subj){np.push(subj);sp.push(subj);}
+  const scenes=giAll('scene');
+  const sc=scenes[0]||null;
+  if(scenes.length){
+    np.unshift(scenes.map(s=>s.nano||s.gpt).join(', '));
+    sp.unshift(scenes.map(s=>s.seed).join(', '));
+  }
+  ['camera','lens','focal','aperture','lut','light','skin'].forEach(k=>{
     const it=gi(k);
-    if(it){np.push(it.nano||it.gpt);gp.push(it.gpt);sp.push(it.seed||it.gpt);}
+    if(it){np.push(it.nano||it.gpt);sp.push(it.seed||it.gpt);}
   });
-  const ss=gi('shotsize');if(ss){np.push(ss.nano||ss.gpt);gp.push(ss.gpt);sp.push(ss.seed);}
-  const rel=gi('relation');if(rel){np.push(rel.nano||rel.gpt);gp.push(rel.gpt);sp.push(rel.seed);}
-  const ang=gi('angle');if(ang){np.push(ang.nano||ang.gpt);gp.push(ang.gpt);sp.push(ang.seed);}
+  const ss=gi('shotsize');if(ss){np.push(ss.nano||ss.gpt);sp.push(ss.seed);}
+  const rel=gi('relation');if(rel){np.push(rel.nano||rel.gpt);sp.push(rel.seed);}
+  const ang=gi('angle');if(ang){np.push(ang.nano||ang.gpt);sp.push(ang.seed);}
   const mo=gi('motion');const spd=gi('speed');
 
-  if(!np.length){setOut('nano',null);setOut('gpt',null);setOut('seed',null);return;}
+  const gridItem=gi('grid');
+  if(!np.length){
+    if(gridItem){
+      const hint=`Create a ${gridItem.cols}×${gridItem.rows} cinematic storyboard grid.\nDescribe your scene in the Description field, then select scene type, camera, lens, and lighting to complete this prompt.\nAll panels share consistent character, lighting, and color palette. Thin dark border between panels. Panel number in corner. No text overlays.`;
+      setOut('nano',hint);setOut('gpt',hint);setOut('seed',null);
+    } else {
+      setOut('nano',null);setOut('gpt',null);setOut('seed',null);
+    }
+    return;
+  }
 
-  const imgQuality='ultra-realistic, photorealistic, sharp clarity, professional photography, no blur, no artifacts';
   const con='avoid jitter, avoid bent limbs, avoid identity drift, maintain face consistency, sharp clarity, natural colors, stable picture, no blur, no ghosting, no flickering';
   const mstr=mo?(spd?spd.seed+' '+mo.seed:mo.seed):'static locked-off camera';
 
-  const extra = document.getElementById('extra').value.trim();
-
   // ── NANO BANANA: verb-first conversational sentence ──
-  // Rule: Start with strong action verb. Describe scene naturally like talking to a photographer.
-  // Positive framing only. No keyword spam. No "stunning/amazing/masterpiece".
-  // Structure: Photograph/Capture/Shoot [subject] [doing action] in [environment].
-  //            [Camera detail]. [Lighting]. [Color/style]. [Positive constraints].
-  const gridItem = gi('grid');
   const gridCols = gridItem ? gridItem.cols : 1;
   const gridRows = gridItem ? gridItem.rows : 1;
   const isGrid = gridCols * gridRows > 1;
@@ -919,13 +982,13 @@ function build(){
   const nanoVerb = sceneVerb(sc ? sc.v : null);
   const nanoParts = [];
   if (subj) nanoParts.push(subj);
-  ['camera','lens','focal','aperture','lut','light'].forEach(k => {
+  ['camera','lens','focal','aperture','lut','light','skin'].forEach(k => {
     const it = gi(k); if (it && it.nano) nanoParts.push(it.nano);
   });
   const nss = gi('shotsize'); if (nss && nss.nano) nanoParts.push(nss.nano);
   const nrel = gi('relation'); if (nrel && nrel.nano) nanoParts.push(nrel.nano);
   const nang = gi('angle'); if (nang && nang.nano) nanoParts.push(nang.nano);
-  const nanoScene = sc ? sc.nano : '';
+  const nanoScene = scenes.length ? scenes.map(s=>s.nano||s.gpt).join(', ') : '';
   let nanoPrompt;
   if(isGrid){
     const totalPanels = gridCols * gridRows;
@@ -944,13 +1007,11 @@ function build(){
       (nanoScene ? ' for a ' + nanoScene : '') + '.\n' +
       rows.join('\n') + '\n' +
       'All panels share: ' + (nanoParts.length ? nanoParts.join(', ') + '.' : 'consistent lighting and color palette.') + '\n' +
-      'Consistent character design. Thin dark border between panels. Panel number in corner. No other text overlays.' +
-      (extra ? '\n' + extra : '');
+      'Consistent character design. Thin dark border between panels. Panel number in corner. No other text overlays.';
   } else {
     nanoPrompt = nanoVerb + (nanoScene ? ' ' + nanoScene : '') +
       (nanoParts.length ? '. ' + nanoParts.join(', ') : '') +
-      '. Photorealistic, natural light rendering, no watermark, no text overlay' +
-      (extra ? '. ' + extra : '') + '.';
+      '. Photorealistic, natural light rendering, no watermark, no text overlay.';
   }
   setOut('nano', nanoPrompt);
 
@@ -958,13 +1019,14 @@ function build(){
   // Rule: Noun-first, layered paragraphs. Use line breaks between sections for complex prompts.
   // Describe the photograph, not the fantasy. Visual facts over adjectives.
   // "Excitement does not render." - OpenAI cookbook
-  const gptScene  = sc ? sc.gpt : '';
+  const gptScene  = scenes.length ? scenes.map(s=>s.gpt).join(', ') : '';
   const gptCam    = gi('camera');
   const gptLens   = gi('lens');
   const gptFocal  = gi('focal');
   const gptApert  = gi('aperture');
   const gptLut    = gi('lut');
   const gptLight  = gi('light');
+  const gptSkin   = gi('skin');
   const gptSS     = gi('shotsize');
   const gptRel    = gi('relation');
   const gptAng    = gi('angle');
@@ -982,13 +1044,11 @@ function build(){
       'Show the same character from 6 angles: front view, left profile, right profile, back view, 3/4 view, close-up face.\n' +
       '2×3 grid layout, white or neutral background, consistent character design, outfit, and proportions throughout.\n' +
       (charStyle.length ? charStyle.join(', ') + '.\n' : '') +
-      'Professional character design illustration, clean lines, no background clutter, labeled angles.' +
-      (extra ? '\n' + extra + '.' : '');
+      'Professional character design illustration, clean lines, no background clutter, labeled angles.';
     setOut('nano', 'Create a character reference sheet for ' + charSubj +
-      ' showing front, side, back, and 3/4 views. Consistent character design throughout, white background, professional illustration.' +
-      (extra ? ' ' + extra + '.' : ''));
+      ' showing front, side, back, and 3/4 views. Consistent character design throughout, white background, professional illustration.');
     setOut('gpt', charPrompt);
-    setOut('seed', [...sp, mstr, con, ...(extra ? [extra] : [])].join(', '));
+    setOut('seed', [...sp, mstr, con].join(', '));
     return;
   }
 
@@ -1011,10 +1071,9 @@ function build(){
   if (gptLight) styleParts.push(gptLight.gpt);
   if (gptLut) styleParts.push(gptLut.gpt);
   if (gptCam) styleParts.push(gptCam.gpt);
+  if (gptSkin) styleParts.push(gptSkin.gpt);
   if (styleParts.length) gptLines.push(styleParts.join(', ') + '.');
-  // Line 4: Extra + constraints
-  const constLine = 'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.' +
-    (extra ? ' ' + extra + '.' : '');
+  const constLine = 'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.';
   gptLines.push(constLine);
 
   let gptFinal;
@@ -1042,23 +1101,23 @@ function build(){
     gptFinal = gptLines.join('\n');
   }
   setOut('gpt', gptFinal);
-  setOut('seed', [...sp, mstr, con, ...(extra ? [extra] : [])].join(', '));
+  setOut('seed', [...sp, mstr, con].join(', '));
+  if(lastPreprod && document.getElementById('rpane-preprod').classList.contains('active')) genPreprod(lastPreprod);
 }
 
 function setOut(type,text){
-  const el=document.getElementById('out-'+type);
-  if(!text){el.value='';el.className='out-body';}
-  else{el.value=text;el.className='out-body';}
+  document.getElementById('out-'+type).value=text||'';
 }
+function _(zh,en){return document.body.classList.contains('en-mode')?en:zh;}
+
 function clearOut(type){
-  const el=document.getElementById('out-'+type);
-  el.value='';
-  toast('已清除 Cleared');
+  document.getElementById('out-'+type).value='';
+  toast(_('已清除','Cleared'));
 }
 
 function renderTL(){
   const area=document.getElementById('tl-area');
-  if(!shots.length){area.innerHTML='<div style="font-size:16px;color:var(--text3);padding:2px 0">尚無鏡頭段 / No shots yet — add below</div>';return;}
+  if(!shots.length){area.innerHTML='<div style="font-size:16px;color:var(--text3);padding:2px 0">'+_('尚無鏡頭段 / No shots yet — add below','No shots yet — add below')+'</div>';return;}
   area.innerHTML=shots.map((s,i)=>`
     <div class="tl-row">
       <input class="tl-in" value="${s.t}" placeholder="0-4s" oninput="shots[${i}].t=this.value;build()"/>
@@ -1072,27 +1131,23 @@ function removeShot(i){shots.splice(i,1);renderTL();}
 function clearTL(){shots=[];renderTL();build();}
 function applyTLT(n){
   shots=TL[n].map(s=>({...s}));renderTL();
-  document.querySelectorAll('#tab-bar .tab').forEach(t=>t.classList.remove('active'));
-  document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-  document.querySelector('#tab-bar .tab:nth-child(4)').classList.add('active');
-  document.getElementById('pane-timeline').classList.add('active');
-  // Switch to Video tab to show Seedance output
-  switchRTab('video', document.querySelector('.rtab:nth-child(2)'));
+  switchTab('timeline',document.getElementById('tab-timeline'));
+  switchRTab('video',document.getElementById('rtab-video'));
 }
 
 function doCopy(type){
   const el=document.getElementById('out-'+type);
-  if(!el.value.trim()){toast('欄位是空的 / Empty');return;}
-  navigator.clipboard.writeText(el.value).then(()=>toast('已複製 Copied ✓'));
+  if(!el.value.trim()){toast(_('欄位是空的','Empty'));return;}
+  navigator.clipboard.writeText(el.value).then(()=>toast(_('已複製','Copied')+' ✓'));
 }
 function doDownload(type){
   const el=document.getElementById('out-'+type);
-  if(!el.value.trim()){toast('欄位是空的 / Empty');return;}
+  if(!el.value.trim()){toast(_('欄位是空的','Empty'));return;}
   const names={nano:'nano-banana',gpt:'gpt-image2',seed:'seedance'};
   const a=document.createElement('a');
   a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(el.value);
   a.download='prompt-'+names[type]+'-'+Date.now()+'.txt';
-  a.click();toast('已下載 Downloaded ✓');
+  a.click();toast(_('已下載','Downloaded')+' ✓');
 }
 function toast(msg){
   const t=document.getElementById('toast');
@@ -1107,13 +1162,9 @@ function applyPreset(name){
     const c=document.getElementById('g-'+key);if(!c)return;
     const btn=c.querySelector(`[data-v="${val}"]`);
     if(btn){S[key]=val;btn.classList.add('on');}
-    if(STAT[key]){document.getElementById(STAT[key]).textContent=item.l;document.getElementById('st-'+key).classList.add('lit');}
   });
   if(p.director){
-    document.querySelectorAll('#tab-bar .tab').forEach(t=>t.classList.remove('active'));
-    document.querySelectorAll('.tab-pane').forEach(p=>p.classList.remove('active'));
-    document.querySelector('#tab-bar .tab:nth-child(3)').classList.add('active');
-    document.getElementById('pane-director').classList.add('active');
+    switchTab('director',document.getElementById('tab-director'));
   }
   build();
 }
@@ -1121,17 +1172,176 @@ function applyPreset(name){
 function doClear(silent){
   Object.keys(S).forEach(k=>delete S[k]);
   document.querySelectorAll('.chip.on').forEach(b=>b.classList.remove('on'));
-  Object.entries(STAT).forEach(([k,id])=>{
-    document.getElementById(id).textContent='—';
-    document.getElementById('st-'+k).classList.remove('lit');
-  });
   document.getElementById('subject').value='';
   build();if(!silent)toast('All Cleared');
 }
 
+let lastPreprod=null;
+function genPreprod(type){
+  lastPreprod=type;
+  document.querySelectorAll('.preprod-btns .ghost-btn').forEach(b=>b.classList.remove('active'));
+  const activeBtn=document.querySelector(`.preprod-btns .ghost-btn[onclick*="'${type}'"]`);
+  if(activeBtn) activeBtn.classList.add('active');
+  const subj=document.getElementById('subject').value.trim()||'[Film Title / Subject]';
+  const dir=gi('director');
+  const lut=gi('lut');const light=gi('light');const cam=gi('camera');
+  const sc=gi('scene');
+  const genre=sc?sc.gpt:'cinematic';
+  const styleRef=[dir?dir.sig:null,lut?lut.gpt:null,light?light.gpt:null,cam?cam.gpt:null].filter(Boolean).join(', ');
+  const cinRef=styleRef||'Roger Deakins — motivated natural light, 35mm feel';
+  let out='';
+  if(type==='moodboard'){
+    out=`Create a cinematic film mood board.
+OUTPUT: Grid collage layout, 9–12 visual elements, no narrative scenes, no characters in action, no watermarks, no text overlays.
+
+PROJECT: "${subj}"
+GENRE: "${genre}"
+FEEL: "[One sentence — what this film feels like, not what happens]"
+
+MOOD KEYWORDS: [3–5 words, e.g. suffocating / fragile / raw / isolated]
+
+VISUAL ELEMENTS:
+□ 2–3 environment textures (wet concrete / oxidized metal / dense fog / cracked glass)
+□ 2–3 lighting references${light?' ('+light.gpt+')':''}
+□ 1–2 flat color swatch panels
+□ 1 human fragment (hands / silhouette / partial face — no full portrait)
+□ 1 material close-up (fabric / surface / key object detail)
+
+COLOR PALETTE:
+Primary:   [HEX or description]
+Secondary: [HEX or description]
+Accent:    [HEX — use sparingly]
+Forbidden: [colors to strictly avoid]
+
+VISUAL RULES:
+- Every element evokes FEELING, not story
+- Film grain texture throughout
+- Photorealistic materials, not illustrated
+- No character faces, no readable text
+
+CINEMATOGRAPHER REFERENCE: ${cinRef}`;
+  } else if(type==='chardesign'){
+    out=`Create a cinematic character design reference sheet.
+No text captions inside visual panels. Background: aged beige.
+
+IDENTITY:
+Name: "[CHARACTER NAME]"
+Age: [XX] | Height: [X.XX m] | Build: [lean / athletic / stocky]
+Role: "[PROTAGONIST / ANTAGONIST / SUPPORT]"
+Archetype: "[Survivor / Investigator / Outsider / Guardian]"
+
+FULL BODY — 4 VIEWS (same scale, neutral background):
+Front / 3/4 angle / Side profile / Back
+Costume: [full outfit — material, color, fit, condition]
+Visible props: [PROP 1] / [PROP 2]
+
+FACE — 3 ANGLES:
+Front / 3/4 / Side profile
+Key features:
+- Hair: [color + style + length]
+- Eyes: [color + shape]
+- Skin tone: [description]
+- Marks: [scars / tattoos / none]
+
+EXPRESSION SHEET — 6 STATES (bust shot, same costume):
+Neutral / Determined / Fear / Pain / Anger / Hope
+
+TEXTURE SWATCHES (bottom bar): [MATERIAL 1] / [MATERIAL 2] / [MATERIAL 3]
+
+Film production reference sheet, structured grid, photorealistic rendering.${styleRef?'\nStyle: '+styleRef:''}`;
+  } else if(type==='masterstory'){
+    out=`Create a cinematic master storyboard.
+OUTPUT: 3×3 grid, 9 panels, 16:9 per panel. No text overlays. No watermarks.
+
+SUBJECT: ${subj}
+STORY: [One sentence logline]
+COLOR PALETTE: [match Mood Board palette]
+VISUAL TEXTURE: [match Mood Board texture]
+
+— 9 PANELS —
+Choose 9 moments you would actually want to photograph.
+Rules:
+- No required chronological order — choose the most visually powerful moments
+- Backgrounds may change between panels (different locations allowed)
+- Cluster panels on the emotionally heaviest beats
+
+For each panel, describe only three things:
+1. What is in frame (subject, position, background)
+2. Shot size + angle: [EWS / WS / MS / MCU / CU / ECU / low / high / OTS / POV]
+3. What the light does (direction, quality, color)
+
+Panel 1–9: [describe freely]
+
+CONSISTENCY: same character costume, same color palette, same film grain throughout.
+Photorealistic, cinematic film tone, 35mm feel.
+${styleRef?'STYLE: '+styleRef:''}`;
+  } else if(type==='scenestory'){
+    out=`Create a cinematic scene storyboard with integrated shot list.
+OUTPUT: 3×3 grid (9 panels, 16:9 each) + shot list table below.
+No text overlays inside panels. No watermarks.
+
+SUBJECT: [CHARACTER — age / build / hair / costume / key prop]
+SCENE: [LOCATION — surfaces, light source, atmosphere]
+ACTION: [ONE SENTENCE — written as direction, not state]
+TIMECODE: [e.g. 0:35–0:45 of full film]
+COLOR PALETTE: [match Mood Board]
+
+— UPPER: 9 COVERAGE PANELS — (same location, same action, 9 camera angles)
+Panel 1 | Establishing Shot  — EWS or WS, eye-level, static or slow pan
+Panel 2 | Master Shot        — FS or MS, full action visible, static
+Panel 3 | Primary MS         — MS waist up, subtle push in
+Panel 4 | MCU                — chest up, slow dolly in
+Panel 5 | CU                 — face dominant, eye-level, static
+Panel 6 | ECU Insert         — eyes / hands / key object, shallow DoF
+Panel 7 | Over-the-Shoulder  — MCU OTS, foreground shoulder blurred
+Panel 8 | Low Angle          — MS or Cowboy Shot, slow orbit
+Panel 9 | High Angle         — WS or MS, high angle, slow tilt
+
+STRICT CONSISTENCY: identical location, costume, props, lighting direction.
+Anamorphic lens flare on CU panels. Photorealistic, 35mm feel.
+${styleRef?'STYLE: '+styleRef:''}
+
+— LOWER: SHOT LIST TABLE —
+9 rows + header: "#" | "Shot Type + Focal Length" | "Action" | "Camera Move" | "Duration" | "Note"`;
+  } else if(type==='chargrid'){
+    out=`Generate a photorealistic cinematic 2×2 grid of character reference still frames from a ${genre} film.
+
+The imagery must feel grounded, tactile, and physically real — like 35mm film stock shot on a practical set with real light sources. No animation style, no painterly rendering, no stylized digital glow.
+
+This is a CHARACTER REFERENCE GRID. The environment must remain consistent throughout.
+
+Each frame: a different angle or distance, capturing the character in various poses within the environment.
+
+Do not write text on the image. No subtitles. No captions.
+
+SCENE & ENVIRONMENT: ${subj}
+CHARACTERS: [Description — age, build, hair, costume, distinctive marks]
+CAMERA & COMPOSITION: Alternate between WS / MS / MCU / CU across the 4 panels
+LIGHTING & ATMOSPHERE: ${light?light.gpt:'natural motivated lighting, 35mm feel'}
+TONE & FINISH: ${cam?cam.gpt:'35mm film stock, cinematic color grade'}${lut?', '+lut.gpt:''}`;
+  } else if(type==='scenegrid'){
+    out=`Generate a photorealistic cinematic 2×2 grid of still frames from a ${genre} film, depicting ${subj}.
+
+The imagery must feel grounded, tactile, and physically real — like 35mm film stock with practical lighting. No animation style, no painterly rendering.
+
+Each frame represents a different angle or distance from the SAME continuous moment.
+
+Do not write text on the image. No subtitles. No captions.
+
+SCENE & ENVIRONMENT: [Specific spatial detail — surfaces, light source, atmosphere]
+CHARACTERS: [Descriptions]
+ACTION & CONTINUITY: [Physical action — all 4 frames are ONE continuous moment]
+CAMERA & COMPOSITION: [Shot types, angles, lens choices per frame]
+LIGHTING & ATMOSPHERE: ${light?light.gpt:'natural motivated lighting'}
+TONE & FINISH: ${cam?cam.gpt:'35mm film stock, cinematic color grade'}${lut?', '+lut.gpt:''}`;
+  }
+  document.getElementById('out-preprod').value=out;
+  toast(_('已生成','Generated'));
+}
+
 function doSave(){
   const name=document.getElementById('save-name').value.trim();
-  if(!name){toast('請輸入名稱');return;}
+  if(!name){toast(_('請輸入名稱','Please enter a name'));return;}
   const which=document.getElementById('save-which').value;
   const nanoEl=document.getElementById('out-nano');
   const gptEl=document.getElementById('out-gpt');
@@ -1149,54 +1359,34 @@ function doSave(){
     promptText=parts.join('\n\n');
   }
 
-  if(!promptText){toast('欄位是空的，請先生成或輸入 prompt');return;}
+  if(!promptText){toast(_('欄位是空的，請先生成或輸入 prompt','Field is empty — generate or type a prompt first'));return;}
 
   const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
   saved.unshift({
     name,
     type:'prompt',
     which,
-    text:promptText,
+    nano:nanoEl.value.trim(),
+    gpt:gptEl.value.trim(),
+    seed:seedEl.value.trim(),
     ts:Date.now()
   });
   if(saved.length>30)saved.pop();
   localStorage.setItem('cpb-v6',JSON.stringify(saved));
   document.getElementById('save-name').value='';
   renderSaved();
-  toast('已儲存 Saved: '+name);
-}
-
-function doSavePreset(){
-  const name=document.getElementById('save-preset-name').value.trim();
-  if(!name){toast('請輸入名稱');return;}
-  const gptEl=document.getElementById('out-gpt');
-  if(!gptEl.value.trim()){toast('請先選擇選項');return;}
-  const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
-  saved.unshift({
-    name,
-    type:'preset',
-    state:{...S},
-    subj:document.getElementById('subject').value,
-    extra:document.getElementById('extra').value,
-    tl:[...shots],
-    ts:Date.now()
-  });
-  if(saved.length>30)saved.pop();
-  localStorage.setItem('cpb-v6',JSON.stringify(saved));
-  document.getElementById('save-preset-name').value='';
-  renderSaved();
-  toast('已儲存組合 Saved: '+name);
+  toast(_('已儲存','Saved')+': '+name);
 }
 
 function renderSaved(){
   const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
   const list=document.getElementById('saved-list');
-  if(!saved.length){list.innerHTML='<div class="saved-empty">尚無收藏 / No saved presets</div>';return;}
+  if(!saved.length){list.innerHTML='<div class="saved-empty">'+_('尚無收藏 / No saved presets','No saved presets')+'</div>';return;}
   list.innerHTML=saved.map((s,i)=>`
     <div class="si">
       <div class="si-dot"></div>
       <span class="si-name">${s.name}</span>
-      <button class="si-load" onclick="loadSaved(${i})">載入</button>
+      <button class="si-load" onclick="loadSaved(${i})"><span class="zh-p">載入 </span>Load</button>
       <button class="si-del" onclick="delSaved(${i})">✕</button>
     </div>`).join('');
 }
@@ -1205,25 +1395,47 @@ function loadSaved(i){
   const saved=JSON.parse(localStorage.getItem('cpb-v6')||'[]');
   const s=saved[i];
 
-  // Prompt type: copy to clipboard
+  // Prompt type: restore into output textareas
   if(s.type==='prompt'){
-    navigator.clipboard.writeText(s.text).then(()=>toast('已複製 Copied: '+s.name));
+    if(s.nano!==undefined||s.gpt!==undefined||s.seed!==undefined){
+      // New format: individual fields
+      document.getElementById('out-nano').value=s.nano||'';
+      document.getElementById('out-gpt').value=s.gpt||'';
+      document.getElementById('out-seed').value=s.seed||'';
+    } else {
+      // Old format: combined text with section headers — parse each part
+      const text=s.text||'';
+      const nanoMatch=text.match(/──\s*Nano Banana Pro\/2\s*──\n([\s\S]*?)(?=\n\n──\s*|$)/);
+      const gptMatch=text.match(/──\s*GPT Image-2\s*──\n([\s\S]*?)(?=\n\n──\s*|$)/);
+      const seedMatch=text.match(/──\s*Seedance 2\s*──\n([\s\S]*?)(?=\n\n──\s*|$)/);
+      document.getElementById('out-nano').value=nanoMatch?nanoMatch[1].trim():text;
+      document.getElementById('out-gpt').value=gptMatch?gptMatch[1].trim():'';
+      document.getElementById('out-seed').value=seedMatch?seedMatch[1].trim():'';
+    }
+    toast(_('已載入','Loaded')+': '+s.name);
     return;
   }
 
   // Preset type: restore options
   doClear(true);
   document.getElementById('subject').value=s.subj||'';
-  if(s.extra) document.getElementById('extra').value=s.extra;
   if(s.tl&&s.tl.length){shots=[...s.tl];renderTL();}
   Object.entries(s.state||{}).forEach(([key,val])=>{
-    const item=DB[key]&&DB[key].find(i=>i.v===val);if(!item)return;
     const cont=document.getElementById('g-'+key);if(!cont)return;
-    const btn=cont.querySelector('[data-v="'+val+'"]');
-    if(btn){S[key]=val;btn.classList.add('on');}
-    if(STAT[key]){document.getElementById(STAT[key]).textContent=item.l;document.getElementById('st-'+key).classList.add('lit');}
+    const vals=Array.isArray(val)?val:[val];
+    vals.forEach(v=>{
+      const item=DB[key]&&DB[key].find(i=>i.v===v);if(!item)return;
+      const btn=cont.querySelector('[data-v="'+v+'"]');if(!btn)return;
+      if(MULTI_KEYS.has(key)){
+        if(!Array.isArray(S[key]))S[key]=[];
+        S[key].push(v);
+      } else {
+        S[key]=v;
+      }
+      btn.classList.add('on');
+    });
   });
-  build();toast('已載入 Loaded: '+s.name);
+  build();toast(_('已載入','Loaded')+': '+s.name);
 }
 
 function delSaved(i){
@@ -1231,11 +1443,34 @@ function delSaved(i){
   saved.splice(i,1);localStorage.setItem('cpb-v6',JSON.stringify(saved));renderSaved();
 }
 
-const GM={scene:'g-scene',camera:'g-camera',lens:'g-lens',focal:'g-focal',aperture:'g-aperture',lut:'g-lut',light:'g-light',shotsize:'g-shotsize',relation:'g-relation',angle:'g-angle',motion:'g-motion',speed:'g-speed',director:'g-director',grid:'g-grid'};
+const GM={scene:'g-scene',camera:'g-camera',lens:'g-lens',focal:'g-focal',aperture:'g-aperture',lut:'g-lut',light:'g-light',skin:'g-skin',shotsize:'g-shotsize',relation:'g-relation',angle:'g-angle',motion:'g-motion',speed:'g-speed',director:'g-director',grid:'g-grid'};
 Object.entries(GM).forEach(([k,g])=>makeGroup(g,k,DB[k]));
 renderTL();renderSaved();
 document.getElementById('subject').addEventListener('input',build);
-document.getElementById('extra').addEventListener('input',build);
+
+const PH={
+  subject:{zh:'描述主體、場景與任何限制條件... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic',en:'Describe subject, scene and any constraints... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic'},
+  preprod:{zh:'點選上方按鈕生成前期製作 prompt。所有範本會自動套用左側已選的樣式設定。\nClick a template above — style settings from the left panel are applied automatically.',en:'Click a template above — style settings from the left panel are applied automatically.'},
+  saveName:{zh:'命名組合 Name preset...',en:'Name preset...'}
+};
+function applyLang(en){
+  document.getElementById('lang-btn').textContent=en?'繁中':'EN';
+  document.getElementById('subject').placeholder=en?PH.subject.en:PH.subject.zh;
+  document.getElementById('out-preprod').placeholder=en?PH.preprod.en:PH.preprod.zh;
+  document.getElementById('save-name').placeholder=en?PH.saveName.en:PH.saveName.zh;
+  renderTL();renderSaved();
+}
+function toggleLang(){
+  const en=document.body.classList.toggle('en-mode');
+  applyLang(en);
+  localStorage.setItem('cpb-lang',en?'en':'zh');
+}
+(function(){
+  if(localStorage.getItem('cpb-lang')==='en'){
+    document.body.classList.add('en-mode');
+    applyLang(true);
+  }
+})();
 </script>
 </body>
 </html>
