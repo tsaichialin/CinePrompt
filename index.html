@@ -584,10 +584,10 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
         <button class="ghost-btn" onclick="genPreprod('masterstory')"><span class="zh-p">故事九宮格 </span>Master Storyboard</button>
         <button class="ghost-btn" onclick="genPreprod('scenestory')"><span class="zh-p">場景分鏡 </span>Scene Coverage</button>
         <button class="ghost-btn" onclick="genPreprod('chargrid')"><span class="zh-p">角色參考格 </span>Char Ref Grid</button>
-        <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">場景參考格 </span>Scene Grid</button>
+        <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">同場景四角度分鏡 </span>Multi-Angle Grid</button>
         <button class="ghost-btn" onclick="genPreprod('layers')"><span class="zh-p">分層構圖 </span>Layer Comp</button>
       </div>
-      <textarea class="out-body" id="out-preprod" spellcheck="false" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r);padding:12px;resize:none" placeholder="點選上方按鈕生成前期製作 prompt。所有範本會自動套用左側已選的樣式設定。&#10;Click a template above — style settings from the left panel are applied automatically."></textarea>
+      <textarea class="out-body" id="out-preprod" spellcheck="false" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r);padding:12px;resize:none" placeholder="點選上方範本生成 prompt，左側樣式設定會自動套用。&#10;Select a template above — style settings from the left panel are applied automatically."></textarea>
       <div style="display:flex;gap:6px;justify-content:flex-end;flex-shrink:0">
         <button class="act-btn ab-ghost" onclick="document.getElementById('out-preprod').value='';toast(_('已清除','Cleared'))">Clear</button>
         <button class="act-btn ab-red" onclick="doCopy('preprod')">Copy</button>
@@ -676,7 +676,7 @@ const DB={
     {l:'Backlit 逆光剪影輪廓',v:'backlit',nano:'with strong backlit silhouette contre-jour sunlight',gpt:'strong backlit silhouette, contre-jour sunlight',seed:'backlit silhouette, contre-jour, bright behind subject'},
     {l:'Overcast 陰天全漫射無硬影',v:'overcast',nano:'in overcast daylight with even diffused light and clean shadows',gpt:'overcast daylight, even diffused light, no harsh shadows, soft natural wrap',seed:'overcast diffused light, soft even, no harsh shadows'},
     {l:'Soft Key 45° 柔和主燈人像光',v:'softkey',nano:'with soft 45-degree key light for flattering portrait illumination',gpt:'soft key light from 45 degrees upper left, flattering portrait lighting',seed:'45 degree soft key light, flattering portrait'},
-    {l:'體積光 Volumetric Light',v:'volumetric',nano:'with volumetric fog and god rays through atmospheric mist',gpt:'volumetric fog with backlight, atmospheric depth, god rays through mist and dust',seed:'volumetric fog, god rays through mist, atmospheric depth'},
+    {l:'Volumetric Light 體積光',v:'volumetric',nano:'with volumetric fog and god rays through atmospheric mist',gpt:'volumetric fog with backlight, atmospheric depth, god rays through mist and dust',seed:'volumetric fog, god rays through mist, atmospheric depth'},
     {l:'Neon Night 霓虹燈濕地倒影',v:'neon',nano:'with neon light color contrast on wet urban night surfaces',gpt:'neon light color splash, warm and cool contrast, urban night, wet reflections',seed:'neon lights, warm-cool contrast, wet urban night reflections'},
     {l:'Chiaroscuro 強烈明暗巴洛克光',v:'chiar',nano:'in chiaroscuro lighting with dramatic deep shadows and baroque contrast',gpt:'chiaroscuro lighting, dramatic deep shadows, high contrast, baroque quality',seed:'chiaroscuro, dramatic shadows, high contrast single source'},
     {l:'Practical 畫面內現場光源',v:'practical',nano:'with motivated practical lighting from a visible source in frame',gpt:'motivated lighting from practical source, visible light source in frame, naturalistic',seed:'practical source lighting, visible in frame, naturalistic'},
@@ -1507,7 +1507,7 @@ document.getElementById('subject').addEventListener('input',build);
 
 const PH={
   subject:{zh:'描述主體、場景與任何限制條件... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic',en:'Describe subject, scene and any constraints... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic'},
-  preprod:{zh:'點選上方按鈕生成 prompt。所有範本會自動套用左側已選的樣式設定。\nClick a template above — style settings from the left panel are applied automatically.',en:'Click a template above — style settings from the left panel are applied automatically.'},
+  preprod:{zh:'點選上方範本生成 prompt，左側樣式設定會自動套用。',en:'Select a template above — style settings from the left panel are applied automatically.'},
   saveName:{zh:'命名組合 Name preset...',en:'Name preset...'}
 };
 function applyLang(en){
