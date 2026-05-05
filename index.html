@@ -492,7 +492,7 @@ body.en-mode .en-p{display:inline}
     <button class="rtab active" onclick="switchRTab('image',this)"><span class="zh-p">圖像 </span>Image</button>
     <button class="rtab" id="rtab-video" onclick="switchRTab('video',this)"><span class="zh-p">影片 </span>Video</button>
     <button class="rtab" onclick="switchRTab('saved',this)"><span class="zh-p">收藏 </span>Saved</button>
-    <button class="rtab" onclick="switchRTab('preprod',this)"><span class="zh-p">前製範本 </span>Pre-Prod</button>
+    <button class="rtab" onclick="switchRTab('preprod',this)"><span class="zh-p">範本 </span>Templates</button>
   </div>
 
   <!-- Image Tab -->
@@ -578,7 +578,7 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
   <!-- Pre-Prod Tab -->
   <div class="rtab-pane" id="rpane-preprod">
     <div class="preprod-pane">
-      <div class="pblock-head"><span class="zh-p">前期製作範本 </span>Pre-Production</div>
+      <div class="pblock-head"><span class="zh-p">範本 </span>Templates</div>
       <div class="preprod-btns">
         <button class="ghost-btn" onclick="genPreprod('moodboard')"><span class="zh-p">氛圍板 </span>Mood Board</button>
         <button class="ghost-btn" onclick="genPreprod('chardesign')"><span class="zh-p">角色設計 </span>Character Design</button>
@@ -1508,7 +1508,7 @@ document.getElementById('subject').addEventListener('input',build);
 
 const PH={
   subject:{zh:'描述主體、場景與任何限制條件... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic',en:'Describe subject, scene and any constraints... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic'},
-  preprod:{zh:'點選上方按鈕生成前期製作 prompt。所有範本會自動套用左側已選的樣式設定。\nClick a template above — style settings from the left panel are applied automatically.',en:'Click a template above — style settings from the left panel are applied automatically.'},
+  preprod:{zh:'點選上方按鈕生成 prompt。所有範本會自動套用左側已選的樣式設定。\nClick a template above — style settings from the left panel are applied automatically.',en:'Click a template above — style settings from the left panel are applied automatically.'},
   saveName:{zh:'命名組合 Name preset...',en:'Name preset...'}
 };
 function applyLang(en){
