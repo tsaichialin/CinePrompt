@@ -412,7 +412,7 @@ body.en-mode .en-p{display:inline}
 
   <div class="left-sticky">
     <div class="field" style="margin-bottom:0">
-      <div class="field-label"><span class="zh-p">描述 </span>Description</div>
+      <div class="field-label"><span class="zh-p">畫面描述 </span>Shot Description</div>
       <textarea class="text-input" id="subject" rows="3" placeholder="描述主體、場景與任何限制條件... e.g. a woman walking through rain-soaked alley at night, no people in background, 1990s aesthetic" style="resize:vertical;line-height:1.5;min-height:68px"></textarea>
     </div>
   </div>
@@ -563,11 +563,11 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
         <div class="pblock-head"><span class="zh-p">快速預設 </span>Quick Presets</div>
         <div class="pblock-body">
           <div class="preset-list">
-            <button class="pset" onclick="applyPreset('portrait')"><span class="zh-p">人像 </span>Portrait <span class="ptag">ARRI · 85mm · f/2.8</span></button>
-            <button class="pset" onclick="applyPreset('street')"><span class="zh-p">街拍 </span>Street <span class="ptag">Fuji · 35mm · Overcast</span></button>
-            <button class="pset" onclick="applyPreset('noir')"><span class="zh-p">黑色電影 </span>Noir <span class="ptag">ARRI Flex · 50mm</span></button>
-            <button class="pset" onclick="applyPreset('epic')"><span class="zh-p">史詩廣角 </span>Epic <span class="ptag">IMAX · 18mm · Volumetric</span></button>
-            <button class="pset" onclick="applyPreset('fuji')"><span class="zh-p">富士冷調 </span>Fuji Cool <span class="ptag">Eterna · 35mm</span></button>
+            <button class="pset" onclick="applyPreset('portrait')"><span><span class="zh-p">人像 </span>Portrait</span><span class="ptag">ARRI · 85mm · f/2.8</span></button>
+            <button class="pset" onclick="applyPreset('street')"><span><span class="zh-p">街拍 </span>Street</span><span class="ptag">Fuji · 35mm · Overcast</span></button>
+            <button class="pset" onclick="applyPreset('noir')"><span><span class="zh-p">黑色電影 </span>Noir</span><span class="ptag">ARRI Flex · 50mm</span></button>
+            <button class="pset" onclick="applyPreset('epic')"><span><span class="zh-p">史詩廣角 </span>Epic</span><span class="ptag">IMAX · 18mm · Volumetric</span></button>
+            <button class="pset" onclick="applyPreset('fuji')"><span><span class="zh-p">富士冷調 </span>Fuji Cool</span><span class="ptag">Eterna · 35mm</span></button>
             <button class="pset reset" onclick="doClear()"><span class="zh-p">清除全部 </span>Clear All <span class="ptag">Reset</span></button>
           </div>
         </div>
@@ -578,11 +578,10 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
   <!-- Pre-Prod Tab -->
   <div class="rtab-pane" id="rpane-preprod">
     <div class="preprod-pane">
-      <div class="pblock-head"><span class="zh-p">範本 </span>Templates</div>
       <div class="preprod-btns">
         <button class="ghost-btn" onclick="genPreprod('moodboard')"><span class="zh-p">氛圍板 </span>Mood Board</button>
         <button class="ghost-btn" onclick="genPreprod('chardesign')"><span class="zh-p">角色設計 </span>Character Design</button>
-        <button class="ghost-btn" onclick="genPreprod('masterstory')"><span class="zh-p">總覽九宮格 </span>Master Storyboard</button>
+        <button class="ghost-btn" onclick="genPreprod('masterstory')"><span class="zh-p">故事九宮格 </span>Master Storyboard</button>
         <button class="ghost-btn" onclick="genPreprod('scenestory')"><span class="zh-p">場景分鏡 </span>Scene Coverage</button>
         <button class="ghost-btn" onclick="genPreprod('chargrid')"><span class="zh-p">角色參考格 </span>Char Ref Grid</button>
         <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">場景參考格 </span>Scene Grid</button>
@@ -677,7 +676,7 @@ const DB={
     {l:'Backlit 逆光剪影輪廓',v:'backlit',nano:'with strong backlit silhouette contre-jour sunlight',gpt:'strong backlit silhouette, contre-jour sunlight',seed:'backlit silhouette, contre-jour, bright behind subject'},
     {l:'Overcast 陰天全漫射無硬影',v:'overcast',nano:'in overcast daylight with even diffused light and clean shadows',gpt:'overcast daylight, even diffused light, no harsh shadows, soft natural wrap',seed:'overcast diffused light, soft even, no harsh shadows'},
     {l:'Soft Key 45° 柔和主燈人像光',v:'softkey',nano:'with soft 45-degree key light for flattering portrait illumination',gpt:'soft key light from 45 degrees upper left, flattering portrait lighting',seed:'45 degree soft key light, flattering portrait'},
-    {l:'Volumetric 體積光霧氣丁達爾',v:'volumetric',nano:'with volumetric fog and god rays through atmospheric mist',gpt:'volumetric fog with backlight, atmospheric depth, god rays through mist and dust',seed:'volumetric fog, god rays through mist, atmospheric depth'},
+    {l:'體積光 Volumetric Light',v:'volumetric',nano:'with volumetric fog and god rays through atmospheric mist',gpt:'volumetric fog with backlight, atmospheric depth, god rays through mist and dust',seed:'volumetric fog, god rays through mist, atmospheric depth'},
     {l:'Neon Night 霓虹燈濕地倒影',v:'neon',nano:'with neon light color contrast on wet urban night surfaces',gpt:'neon light color splash, warm and cool contrast, urban night, wet reflections',seed:'neon lights, warm-cool contrast, wet urban night reflections'},
     {l:'Chiaroscuro 強烈明暗巴洛克光',v:'chiar',nano:'in chiaroscuro lighting with dramatic deep shadows and baroque contrast',gpt:'chiaroscuro lighting, dramatic deep shadows, high contrast, baroque quality',seed:'chiaroscuro, dramatic shadows, high contrast single source'},
     {l:'Practical 畫面內現場光源',v:'practical',nano:'with motivated practical lighting from a visible source in frame',gpt:'motivated lighting from practical source, visible light source in frame, naturalistic',seed:'practical source lighting, visible in frame, naturalistic'},
