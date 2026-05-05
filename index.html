@@ -1340,7 +1340,7 @@ TONE & FINISH: ${cam?cam.gpt:'35mm film stock, cinematic color grade'}${lut?', '
     const cRef=cam?cam.gpt:'35mm anamorphic, shallow depth of field, film grain';
     const lutRef=lut?', '+lut.gpt:'';
     out=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-LAYER COMPOSITE — GPT Image-2 分批生成
+${_('LAYER COMPOSITE — GPT Image-2 分層生成','LAYER COMPOSITE — GPT Image-2')}
 Generate each prompt separately → composite in Photoshop / Photopea.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
