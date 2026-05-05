@@ -586,6 +586,7 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
         <button class="ghost-btn" onclick="genPreprod('scenestory')"><span class="zh-p">場景分鏡 </span>Scene Coverage</button>
         <button class="ghost-btn" onclick="genPreprod('chargrid')"><span class="zh-p">角色參考格 </span>Char Ref Grid</button>
         <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">場景參考格 </span>Scene Grid</button>
+        <button class="ghost-btn" onclick="genPreprod('layers')"><span class="zh-p">分層構圖 </span>Layer Comp</button>
       </div>
       <textarea class="out-body" id="out-preprod" spellcheck="false" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r);padding:12px;resize:none" placeholder="點選上方按鈕生成前期製作 prompt。所有範本會自動套用左側已選的樣式設定。&#10;Click a template above — style settings from the left panel are applied automatically."></textarea>
       <div style="display:flex;gap:6px;justify-content:flex-end;flex-shrink:0">
@@ -1334,6 +1335,63 @@ ACTION & CONTINUITY: [Physical action — all 4 frames are ONE continuous moment
 CAMERA & COMPOSITION: [Shot types, angles, lens choices per frame]
 LIGHTING & ATMOSPHERE: ${light?light.gpt:'natural motivated lighting'}
 TONE & FINISH: ${cam?cam.gpt:'35mm film stock, cinematic color grade'}${lut?', '+lut.gpt:''}`;
+  } else if(type==='layers'){
+    const lRef=light?light.gpt:'single practical light source, motivated direction';
+    const cRef=cam?cam.gpt:'35mm anamorphic, shallow depth of field, film grain';
+    const lutRef=lut?', '+lut.gpt:'';
+    out=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+LAYER COMPOSITE — GPT Image-2 分批生成
+Generate each prompt separately → composite in Photoshop / Photopea.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── LAYER 1 — BACKGROUND (Clean Plate) ──
+Generate first. Environment only. Zero characters or figures.
+
+Generate a photorealistic cinematic still from a ${genre} film.
+ENVIRONMENT ONLY — no people, no characters, no figures of any kind.
+SCENE: ${subj}
+Camera: wide establishing shot, static or gentle drift.
+LIGHTING: ${lRef}
+TONE: ${cRef}${lutRef}
+No text, no watermark, no characters, clean plate.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── LAYER 2 — MIDGROUND ELEMENTS (Props / Set Dressing) ──
+Optional — skip if scene has no secondary objects.
+
+Isolated props and set-dressing objects from the same scene.
+Objects only — no people — on a neutral mid-grey background.
+OBJECTS: [key props, furniture, environmental details from the scene]
+Match exact lighting direction and color temperature from Layer 1.
+TONE: ${cRef}${lutRef}
+No text, no watermark, neutral background, isolated objects.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── LAYER 3 — FOREGROUND CHARACTER (Subject Isolation) ──
+Generate last. Character only on neutral background.
+API tip: set background:"transparent" to get alpha-channel PNG.
+
+Generate a photorealistic cinematic character still from a ${genre} film.
+CHARACTER: [name — age, build, hair, costume, expression]
+ACTION: [pose / gesture — specific, not "standing"]
+Background: solid neutral grey — pure subject isolation.
+Match exact lighting direction and color temperature from Layer 1.
+Camera: [MCU / MS / CU] — [framing note]
+LIGHTING: ${lRef}
+TONE: ${cRef}${lutRef}
+No text, no watermark, character isolated on neutral ground.
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+── COMPOSITE GUIDE ──
+Stack bottom → top in Photoshop / Photopea:
+  1. Layer 1 — Background (base)
+  2. Layer 2 — Midground props (Normal or Multiply blend)
+  3. Layer 3 — Foreground character (remove BG via Remove.bg or API alpha)
+Match levels / color grade across all layers before final export.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
   }
   document.getElementById('out-preprod').value=out;
   toast(_('已生成','Generated'));
