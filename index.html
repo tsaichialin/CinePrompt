@@ -87,7 +87,7 @@ header{
 .header-right{margin-left:auto;display:flex;gap:6px;align-items:center}
 
 /* ─── Layout ─── */
-.app{display:grid;grid-template-columns:1fr 700px;min-height:calc(100vh - 48px)}
+.app{display:grid;grid-template-columns:3fr 1fr;min-height:calc(100vh - 48px)}
 .left{padding:0 28px 80px;border-right:1px solid var(--line);overflow-y:auto;height:calc(100vh - 48px)}
 .right{
   display:flex;flex-direction:column;gap:0;
@@ -586,6 +586,8 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
         <button class="ghost-btn" onclick="genPreprod('chargrid')"><span class="zh-p">角色參考格 </span>Char Ref Grid</button>
         <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">同場景四角度分鏡 </span>Multi-Angle Grid</button>
         <button class="ghost-btn" onclick="genPreprod('layers')"><span class="zh-p">分層構圖 </span>Layer Comp</button>
+        <button class="ghost-btn" onclick="genPreprod('contactsheet')"><span class="zh-p">試鏡格 </span>Contact Sheet</button>
+        <button class="ghost-btn" onclick="genPreprod('igfeed')"><span class="zh-p">Instagram 九格 </span>IG Feed Grid</button>
       </div>
       <textarea class="out-body" id="out-preprod" spellcheck="false" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r);padding:12px;resize:none" placeholder="點選上方範本生成 prompt，左側樣式設定會自動套用。&#10;Select a template above — style settings from the left panel are applied automatically."></textarea>
       <div style="display:flex;gap:6px;justify-content:flex-end;flex-shrink:0">
@@ -1391,6 +1393,65 @@ Stack bottom → top in Photoshop / Photopea:
   3. Layer 3 — Foreground character (remove BG via Remove.bg or API alpha)
 Match levels / color grade across all layers before final export.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+  } else if(type==='contactsheet'){
+    const totalPanels=6;
+    out=`Create a cinematic contact sheet / storyboard grid.
+OUTPUT: 2×3 grid (${totalPanels} panels, 16:9 each). No text overlays inside panels. No watermarks.
+
+SUBJECT: ${subj}
+${styleRef?'STYLE: '+styleRef:''}
+
+Grid: 2 columns × 3 rows, thin dark border separating panels.
+
+Requirements:
+- Every keyframe as a separate panel (one shot per cell)
+- Each panel labeled in corner: KF number + shot type + suggested duration
+  (labels in safe margins, never covering subject)
+- Strict continuity: same subjects, same wardrobe, same environment,
+  same lighting and cinematic color grade throughout
+  Only action / expression / blocking / framing changes between panels
+- DoF shifts realistically: shallow in CU, deeper in wides
+- Photoreal textures, consistent grading throughout
+
+Shot progression (6 panels):
+KF1 | 0–3s  | EWS — Establishing wide, environment in context
+KF2 | 3–6s  | MS  — Master shot, full action visible
+KF3 | 6–9s  | MCU — Primary coverage, face and shoulders
+KF4 | 9–11s | CU  — Emotional close-up, face dominant
+KF5 | 11–13s| ECU — Extreme detail: eyes / hands / key object
+KF6 | 13–15s| Low angle — Power or vulnerability angle
+
+LIGHTING: ${light?light.gpt:'motivated practical lighting, naturalistic'}
+TONE: ${cam?cam.gpt:'35mm film stock, cinematic color grade'}${lut?', '+lut.gpt:''}
+Remove all text overlays from image content.`;
+  } else if(type==='igfeed'){
+    out=`Create a full Instagram-style 3×3 grid feed composed of 9 portrait images.
+OUTPUT: 3×3 grid layout, portrait orientation per panel. No watermarks. No text overlays.
+
+CHARACTER: [Name — age, build, costume, distinctive features]
+THEME: ${subj}
+${styleRef?'STYLE: '+styleRef:''}
+
+Character consistency across all 9 posts:
+Same identity, facial structure, style maintained throughout.
+
+Mix of content types across the 9 panels:
+- 2–3 Lifestyle shots (natural candid moments, everyday environment)
+- 2–3 Cinematic portraits (dramatic lighting, film-still quality)
+- 2   Fashion / streetwear scenes (editorial, urban setting)
+- 1–2 Minimalist studio portraits (clean background, focused on face)
+
+Photography spec: hyperrealistic, professional camera.
+Natural skin texture, accurate lighting, sharp details,
+professional depth of field, high-quality color grading, authentic expressions.
+
+LIGHTING: ${light?light.gpt:'natural motivated lighting'}
+TONE: ${cam?cam.gpt:'35mm anamorphic, cinematic color grade'}${lut?', '+lut.gpt:''}
+
+Feed coherence: consistent character likeness, similar visual tone and color palette,
+aesthetic balance across the grid, cinematic and modern photography style.
+Final: 3×3 grid layout, all 9 images feel coherent as one feed.
+Remove all text overlays.`;
   }
   document.getElementById('out-preprod').value=out;
   toast(_('已生成','Generated'));
