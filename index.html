@@ -87,7 +87,7 @@ header{
 .header-right{margin-left:auto;display:flex;gap:6px;align-items:center}
 
 /* ─── Layout ─── */
-.app{display:grid;grid-template-columns:3fr 1fr;min-height:calc(100vh - 48px)}
+.app{display:grid;grid-template-columns:7fr 3fr;min-height:calc(100vh - 48px)}
 .left{padding:0 28px 80px;border-right:1px solid var(--line);overflow-y:auto;height:calc(100vh - 48px)}
 .right{
   display:flex;flex-direction:column;gap:0;
@@ -216,6 +216,8 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 .right-tabs{
   display:flex;gap:0;border-bottom:1px solid var(--line);
   background:var(--bg);flex-shrink:0;
+  overflow-x:auto;overflow-y:hidden;
+  scrollbar-width:thin;
 }
 .rtab{
   padding:16px 18px;font-size:18px;font-weight:400;
@@ -224,6 +226,7 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
   transition:color .13s,border-color .13s;
   background:none;border-top:none;border-left:none;border-right:none;
   font-family:var(--sans);white-space:nowrap;letter-spacing:.01em;
+  flex:0 0 auto;
 }
 .rtab:hover{color:var(--text)}
 .rtab.active{color:var(--text);border-bottom-color:var(--accent)}
@@ -302,8 +305,19 @@ textarea.tl-in{resize:vertical;min-height:44px;line-height:1.5}
 }
 .pblock-body{padding:10px 12px}
 .preprod-btns{display:flex;flex-wrap:wrap;gap:6px}
-.preprod-btns .ghost-btn{font-size:14px;padding:4px 10px}
+.preprod-btns .ghost-btn,.guide-nav .ghost-btn{font-size:14px;padding:4px 10px}
 .preprod-pane{flex:1;display:flex;flex-direction:column;padding:16px;min-height:0;gap:10px}
+.guide-pane{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:14px}
+.guide-nav{display:flex;flex-wrap:wrap;gap:6px}
+.guide-section{border:1px solid var(--line);border-radius:var(--r);padding:14px;background:transparent}
+.guide-section h3{font-size:18px;font-weight:600;color:var(--text);margin-bottom:8px;letter-spacing:.01em}
+.guide-section p{font-size:16px;color:var(--text3);line-height:1.7;margin-bottom:8px}
+.guide-section ul{margin-left:18px;color:var(--text3);font-size:16px;line-height:1.7}
+.guide-section li{margin-bottom:4px}
+.guide-kicker{font-family:var(--mono);font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.guide-table{width:100%;border-collapse:collapse;font-size:15px;color:var(--text3);margin-top:8px}
+.guide-table th,.guide-table td{border-top:1px solid var(--line);padding:7px 6px;text-align:left;vertical-align:top}
+.guide-table th{color:var(--text);font-weight:600}
 .zh-p{display:inline}
 .en-p{display:none}
 body.en-mode .zh-p{display:none}
@@ -434,6 +448,7 @@ body.en-mode .en-p{display:inline}
         <div id="g-grid" style="display:contents"></div>
       </div>
     </div>
+    <div class="section"><div class="sec-label"><span class="zh-p">工作流 </span>Workflow</div><div class="chips" id="g-workflow"></div></div>
     <div class="section"><div class="sec-label"><span class="zh-p">攝影機 </span>Camera</div><div class="chips" id="g-camera"></div></div>
     <div class="section"><div class="sec-label"><span class="zh-p">鏡頭 </span>Lens</div><div class="chips" id="g-lens"></div></div>
     <div class="section"><div class="sec-label"><span class="zh-p">焦距 </span>Focal Length</div><div class="chips" id="g-focal"></div></div>
@@ -493,6 +508,7 @@ body.en-mode .en-p{display:inline}
     <button class="rtab" id="rtab-video" onclick="switchRTab('video',this)"><span class="zh-p">影片 </span>Video</button>
     <button class="rtab" onclick="switchRTab('saved',this)"><span class="zh-p">收藏 </span>Saved</button>
     <button class="rtab" onclick="switchRTab('preprod',this)"><span class="zh-p">範本 </span>Templates</button>
+    <button class="rtab" onclick="switchRTab('guide',this)"><span class="zh-p">指南 </span>Guide</button>
   </div>
 
   <!-- Image Tab -->
@@ -586,12 +602,160 @@ Ultra-realistic, sharp clarity, no watermark."></textarea>
         <button class="ghost-btn" onclick="genPreprod('chargrid')"><span class="zh-p">角色參考格 </span>Char Ref Grid</button>
         <button class="ghost-btn" onclick="genPreprod('scenegrid')"><span class="zh-p">同場景四角度分鏡 </span>Multi-Angle Grid</button>
         <button class="ghost-btn" onclick="genPreprod('layers')"><span class="zh-p">分層構圖 </span>Layer Comp</button>
+        <button class="ghost-btn" onclick="genPreprod('seedpack')"><span class="zh-p">Image2→Seedance包 </span>Seedance Pack</button>
+        <button class="ghost-btn" onclick="genPreprod('motionsheet')"><span class="zh-p">動作格 </span>Motion Sheet</button>
+        <button class="ghost-btn" onclick="genPreprod('dialogue180')"><span class="zh-p">180度線對話 </span>Dialogue Axis</button>
+        <button class="ghost-btn" onclick="genPreprod('freezeframe')"><span class="zh-p">凍結環繞 </span>Freeze Orbit</button>
       </div>
       <textarea class="out-body" id="out-preprod" spellcheck="false" style="flex:1;min-height:0;border:1px solid var(--line);border-radius:var(--r);padding:12px;resize:none" placeholder="點選上方範本生成 prompt，左側樣式設定會自動套用。&#10;Select a template above — style settings from the left panel are applied automatically."></textarea>
       <div style="display:flex;gap:6px;justify-content:flex-end;flex-shrink:0">
         <button class="act-btn ab-ghost" onclick="document.getElementById('out-preprod').value='';toast(_('已清除','Cleared'))">Clear</button>
         <button class="act-btn ab-red" onclick="doCopy('preprod')">Copy</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Guide Tab -->
+  <div class="rtab-pane" id="rpane-guide">
+    <div class="guide-pane">
+      <div class="guide-nav">
+        <button class="ghost-btn" onclick="scrollGuide('guide-flow')"><span class="zh-p">流程選擇 </span>Workflow</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-preprod')"><span class="zh-p">前製順序 </span>Preprod</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-shotlang')"><span class="zh-p">鏡頭語言 </span>Shot</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-timeline')"><span class="zh-p">時間軸 </span>Timeline</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-grid')"><span class="zh-p">格數建議 </span>Grid</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-prepare')"><span class="zh-p">準備資料 </span>Prep</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-fix')"><span class="zh-p">失敗修正 </span>Fixes</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-seed')">Seedance</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-axis')"><span class="zh-p">180度線 </span>Axis</button>
+        <button class="ghost-btn" onclick="scrollGuide('guide-check')"><span class="zh-p">檢查表 </span>Checklist</button>
+      </div>
+
+      <section class="guide-section" id="guide-flow">
+        <div class="guide-kicker">Pipeline</div>
+        <h3><span class="zh-p">先定畫面，再做動態</span><span class="en-p">Frame first, motion second</span></h3>
+        <p><span class="zh-p">GPT Image 2 負責決定畫面長什麼樣：角色、構圖、格數、文字與視覺一致性。Seedance 2 負責讓畫面動起來：時間軸、運鏡、物理、轉場與聲音提示。</span><span class="en-p">GPT Image 2 decides what the frame looks like: character, composition, panel layout, text, and visual consistency. Seedance 2 decides how that frame moves: timeline, camera motion, physics, transitions, and sound cues.</span></p>
+        <p><span class="zh-p">最穩的流程不是「一句話直接生影片」，而是先把導演意圖變成幾張清楚的圖。圖片越清楚，影片模型需要自由發揮的地方就越少。</span><span class="en-p">The most reliable workflow is not one sentence straight to video. First turn the directing intent into clear images. The clearer the images, the less the video model has to invent.</span></p>
+        <ul>
+          <li><span class="zh-p">想快速找風格：先用 Nano Banana 或 GPT Image 2 做 mood / style exploration。</span><span class="en-p">For fast visual exploration, start with Nano Banana or GPT Image 2 mood/style exploration.</span></li>
+          <li><span class="zh-p">想做短片：先生成 storyboard grid，再餵給 Seedance。</span><span class="en-p">For short films, generate a storyboard grid first, then feed it to Seedance.</span></li>
+          <li><span class="zh-p">想保角色：先做 character sheet，再把它指定為 Image 2。</span><span class="en-p">For character consistency, create a character sheet and assign it as Image 2.</span></li>
+        </ul>
+      </section>
+
+      <section class="guide-section" id="guide-preprod">
+        <div class="guide-kicker">Pre-production</div>
+        <h3><span class="zh-p">從劇本到影片的資料順序</span><span class="en-p">From script to usable video references</span></h3>
+        <p><span class="zh-p">前製文件不是越多越好，而是每一份都要鎖定一種變數。先把人物、場景、情緒、鏡頭順序拆開，最後再交給 Seedance 組成動態，成片會穩很多。</span><span class="en-p">Pre-production is useful when each document locks one variable. Separate character, location, mood, and shot order before asking Seedance to animate them.</span></p>
+        <table class="guide-table">
+          <tr><th><span class="zh-p">資料</span><span class="en-p">Asset</span></th><th><span class="zh-p">用途</span><span class="en-p">Use</span></th></tr>
+          <tr><td><span class="zh-p">劇本 / 場景描述</span><span class="en-p">Script / scene brief</span></td><td><span class="zh-p">先確認事件、情緒轉折、角色關係與必要動作。</span><span class="en-p">Locks story, emotional beats, relationships, and required action.</span></td></tr>
+          <tr><td><span class="zh-p">氛圍板</span><span class="en-p">Mood board</span></td><td><span class="zh-p">鎖定色調、光線、材質、時代感，不要拿來塞劇情。</span><span class="en-p">Locks color, lighting, texture, and period feel.</span></td></tr>
+          <tr><td><span class="zh-p">角色設計表</span><span class="en-p">Character sheet</span></td><td><span class="zh-p">正面、側面、背面、表情與姿勢，給角色一致性使用。</span><span class="en-p">Front, side, back, expressions, and poses for identity consistency.</span></td></tr>
+          <tr><td><span class="zh-p">總分鏡</span><span class="en-p">Master storyboard</span></td><td><span class="zh-p">用 9 格左右抓整支片的節奏，不急著處理每個細節。</span><span class="en-p">Uses around nine panels to lock the whole rhythm.</span></td></tr>
+          <tr><td><span class="zh-p">場景分鏡 / 多角度表</span><span class="en-p">Scene coverage / multi-angle grid</span></td><td><span class="zh-p">同一場景拆成遠景、中景、特寫、反應鏡頭，方便剪接。</span><span class="en-p">Breaks one scene into wide, medium, close-up, and reaction shots.</span></td></tr>
+          <tr><td><span class="zh-p">Seedance 包</span><span class="en-p">Seedance pack</span></td><td><span class="zh-p">指定每張參考圖角色，再加時間軸、鏡頭運動與一致性規則。</span><span class="en-p">Assigns reference image roles, then adds timeline, camera motion, and consistency rules.</span></td></tr>
+        </table>
+      </section>
+
+      <section class="guide-section" id="guide-shotlang">
+        <div class="guide-kicker">Shot Language</div>
+        <h3><span class="zh-p">常用鏡頭語言怎麼寫</span><span class="en-p">Writing practical shot language</span></h3>
+        <p><span class="zh-p">不要只丟專有名詞。比較穩的寫法是「鏡頭類型 + 畫面重點 + 情緒目的」，讓模型知道這個鏡頭為什麼存在。</span><span class="en-p">Do not rely on jargon alone. Use shot type + visual focus + emotional purpose so the model knows why the shot exists.</span></p>
+        <table class="guide-table">
+          <tr><th><span class="zh-p">類型</span><span class="en-p">Type</span></th><th><span class="zh-p">適合寫法</span><span class="en-p">Prompt use</span></th></tr>
+          <tr><td>EWS / WS</td><td><span class="zh-p">建立空間、地理關係、角色在環境中的比例。</span><span class="en-p">Establish space, geography, and character scale.</span></td></tr>
+          <tr><td>MS / MCU</td><td><span class="zh-p">適合對話、動作準備、角色與背景同時可讀。</span><span class="en-p">Good for dialogue, action setup, and readable character-background balance.</span></td></tr>
+          <tr><td>CU / ECU</td><td><span class="zh-p">用來看表情、眼神、手部細節、物件線索。</span><span class="en-p">Use for expression, eyes, hands, or object clues.</span></td></tr>
+          <tr><td>OTS / Two-shot</td><td><span class="zh-p">對話鏡頭要寫清楚誰在畫面左、誰在畫面右。</span><span class="en-p">For dialogue, define who stays screen left and screen right.</span></td></tr>
+          <tr><td>Tracking / Dolly in</td><td><span class="zh-p">追蹤角色或慢慢推近情緒，適合 Seedance 時間軸。</span><span class="en-p">Tracks a subject or slowly pushes into an emotional beat.</span></td></tr>
+          <tr><td>Orbit / Handheld</td><td><span class="zh-p">環繞適合展示物件或角色狀態；手持適合紀實、UGC、緊張感。</span><span class="en-p">Orbit reveals a subject; handheld adds documentary, UGC, or tension.</span></td></tr>
+        </table>
+      </section>
+
+      <section class="guide-section" id="guide-timeline">
+        <div class="guide-kicker">Timeline</div>
+        <h3><span class="zh-p">15 秒 Seedance 時間軸範本</span><span class="en-p">A 15-second Seedance timeline pattern</span></h3>
+        <p><span class="zh-p">Seedance 最怕文字一次塞太多動作。可以用 6 段時間軸，每段只寫一個主要動作、一個鏡頭運動，以及必要的物理細節。</span><span class="en-p">Seedance becomes unstable when too many actions are packed together. Use six timed beats with one main action, one camera move, and necessary physical detail per beat.</span></p>
+        <table class="guide-table">
+          <tr><th><span class="zh-p">時間</span><span class="en-p">Time</span></th><th><span class="zh-p">功能</span><span class="en-p">Function</span></th></tr>
+          <tr><td>0-2s</td><td><span class="zh-p">建立場景與角色位置，動作不要太大。</span><span class="en-p">Establish scene and character position.</span></td></tr>
+          <tr><td>2-5s</td><td><span class="zh-p">主要動作開始，鏡頭跟上但不要亂切。</span><span class="en-p">Begin the main action with a controlled camera move.</span></td></tr>
+          <tr><td>5-8s</td><td><span class="zh-p">動作升級或角色反應，保留清楚方向。</span><span class="en-p">Escalate action or show reaction while preserving direction.</span></td></tr>
+          <tr><td>8-11s</td><td><span class="zh-p">放大細節、慢動作、物件或表情轉折。</span><span class="en-p">Highlight detail, slow motion, object, or expression shift.</span></td></tr>
+          <tr><td>11-13s</td><td><span class="zh-p">完成動作，讓畫面回到可剪接的穩定狀態。</span><span class="en-p">Resolve the action into an editable stable frame.</span></td></tr>
+          <tr><td>13-15s</td><td><span class="zh-p">停在最後畫面，方便接下一顆鏡頭。</span><span class="en-p">Hold a final frame for the next shot.</span></td></tr>
+        </table>
+      </section>
+
+      <section class="guide-section" id="guide-grid">
+        <div class="guide-kicker">Storyboard</div>
+        <h3><span class="zh-p">格數怎麼選</span><span class="en-p">Choosing panel count</span></h3>
+        <p><span class="zh-p">格數不是越多越好。短影片需要的是清楚的節奏，而不是把所有細節塞進同一張圖。每格最好只負責一個主要動作或一個情緒轉折。</span><span class="en-p">More panels are not always better. Short videos need clear rhythm, not every detail packed into one image. Each panel should carry one main action or emotional turn.</span></p>
+        <table class="guide-table">
+          <tr><th><span class="zh-p">影片長度</span><span class="en-p">Length</span></th><th><span class="zh-p">建議參考圖</span><span class="en-p">Reference</span></th></tr>
+          <tr><td>5–8s</td><td>4–6 panels</td></tr>
+          <tr><td>10–15s</td><td>3×3 or 3×4 grid</td></tr>
+          <tr><td>15s+</td><td><span class="zh-p">分成多張 grid，後期剪接</span><span class="en-p">Split into multiple grids and edit later</span></td></tr>
+          <tr><td><span class="zh-p">舞蹈 / 動作</span><span class="en-p">Dance / action</span></td><td>4×3 or 4×4 motion sheet</td></tr>
+          <tr><td><span class="zh-p">對話</span><span class="en-p">Dialogue</span></td><td>2×3 or 3×3 with screen-direction rules</td></tr>
+        </table>
+      </section>
+
+      <section class="guide-section" id="guide-prepare">
+        <div class="guide-kicker">Before Prompting</div>
+        <h3><span class="zh-p">做圖前先準備什麼</span><span class="en-p">What to prepare before prompting</span></h3>
+        <p><span class="zh-p">不要一開始就把故事丟給影片模型。先把「角色長相、場景、關鍵道具、鏡頭順序」拆成可以被看懂的參考圖，影片生成會穩定很多。</span><span class="en-p">Do not send the whole story straight to the video model. First turn character identity, environment, key props, and shot order into visual references the model can read.</span></p>
+        <ul>
+          <li><span class="zh-p">角色：先做 character sheet，包含正面、側面、背面、表情與動作姿勢。</span><span class="en-p">Character: create a character sheet with front, side, back, expressions, and action poses.</span></li>
+          <li><span class="zh-p">場景：先做空場景或環境參考，鎖定光線、色調、材質與空間方向。</span><span class="en-p">Environment: create a clean scene reference to lock lighting, color, texture, and spatial direction.</span></li>
+          <li><span class="zh-p">道具 / 商品：單獨做參考圖，並寫清楚 logo、形狀、材質與顏色不能改。</span><span class="en-p">Prop/product: create a separate reference and specify that logo, shape, material, and color must not change.</span></li>
+          <li><span class="zh-p">分鏡：每格只放一個主要動作，讓 Seedance 能照順序理解。</span><span class="en-p">Storyboard: keep one main action per panel so Seedance can follow the order.</span></li>
+        </ul>
+      </section>
+
+      <section class="guide-section" id="guide-fix">
+        <div class="guide-kicker">Troubleshooting</div>
+        <h3><span class="zh-p">常見失敗怎麼修</span><span class="en-p">How to fix common failures</span></h3>
+        <table class="guide-table">
+          <tr><th><span class="zh-p">問題</span><span class="en-p">Problem</span></th><th><span class="zh-p">修法</span><span class="en-p">Fix</span></th></tr>
+          <tr><td><span class="zh-p">角色變臉</span><span class="en-p">Face drift</span></td><td><span class="zh-p">加入 character sheet，並指定 Image 2 = main character reference。</span><span class="en-p">Add a character sheet and assign Image 2 = main character reference.</span></td></tr>
+          <tr><td><span class="zh-p">動作亂跳</span><span class="en-p">Random motion</span></td><td><span class="zh-p">改用 storyboard grid 或 motion sheet，並寫時間軸。</span><span class="en-p">Use a storyboard grid or motion sheet, then add a timeline.</span></td></tr>
+          <tr><td><span class="zh-p">商品變形</span><span class="en-p">Product morphing</span></td><td><span class="zh-p">把商品指定成獨立 reference，寫清楚 logo、包裝與形狀不能變。</span><span class="en-p">Use a separate product reference and lock logo, package, and shape.</span></td></tr>
+          <tr><td><span class="zh-p">對話方向錯亂</span><span class="en-p">Dialogue direction flips</span></td><td><span class="zh-p">寫 A 在左、B 在右、A 看右、B 看左，攝影機不越過對話軸線。</span><span class="en-p">Define A left, B right, A looks right, B looks left, camera does not cross the axis.</span></td></tr>
+          <tr><td><span class="zh-p">畫面太像廣告、不自然</span><span class="en-p">Too polished</span></td><td><span class="zh-p">改用 UGC 手機實拍，加入自然光、手持微晃、不完美構圖。</span><span class="en-p">Use UGC smartphone style: natural light, handheld shake, imperfect framing.</span></td></tr>
+        </table>
+      </section>
+
+      <section class="guide-section" id="guide-seed">
+        <div class="guide-kicker">Seedance</div>
+        <h3><span class="zh-p">Seedance prompt 必備三件事</span><span class="en-p">Three essentials for Seedance prompts</span></h3>
+        <p><span class="zh-p">Seedance 不是只看文字，它會依照你指定的參考圖理解角色、場景與順序。Prompt 的重點是把每張圖的用途說清楚，並把影片拆成時間段。</span><span class="en-p">Seedance does not only read text; it uses the reference images to understand character, scene, and order. The prompt should define each image role and break the video into timed beats.</span></p>
+        <ul>
+          <li><span class="zh-p">指定參考圖用途：Image 1 = storyboard，Image 2 = character，Image 3 = environment，Image 4 = product/prop。</span><span class="en-p">Assign reference image roles: Image 1 = storyboard, Image 2 = character, Image 3 = environment, Image 4 = product/prop.</span></li>
+          <li><span class="zh-p">寫時間軸：0–2s、2–4s、4–6s，每段只放一個主要動作。</span><span class="en-p">Write a timeline: 0–2s, 2–4s, 4–6s; keep one main action per beat.</span></li>
+          <li><span class="zh-p">結尾加一致性與禁止事項：不要變臉、不要換衣服、不要亂加角色、不要 flicker / morphing。</span><span class="en-p">End with consistency and negative rules: no face drift, outfit changes, unrelated characters, flicker, or morphing.</span></li>
+        </ul>
+      </section>
+
+      <section class="guide-section" id="guide-axis">
+        <div class="guide-kicker">Continuity</div>
+        <h3><span class="zh-p">180 度線要講成可視化規則</span><span class="en-p">Make the 180-degree line visual</span></h3>
+        <p><span class="zh-p">不要只寫「遵守 180 度線」。要明確寫：A 在畫面左側、B 在畫面右側、A 看右、B 看左、攝影機不越過對話軸線。</span><span class="en-p">Do not only write "follow the 180-degree rule." Spell it out: A stays screen left, B stays screen right, A looks right, B looks left, camera never crosses the dialogue axis.</span></p>
+      </section>
+
+      <section class="guide-section" id="guide-check">
+        <div class="guide-kicker">Checklist</div>
+        <h3><span class="zh-p">輸出前快速檢查</span><span class="en-p">Pre-output checklist</span></h3>
+        <p><span class="zh-p">如果生成結果不穩，通常不是模型完全不懂，而是 prompt 沒有鎖住它最容易亂補的地方：角色、時間順序、鏡頭方向、道具與場景連續性。</span><span class="en-p">When results are unstable, the model often understands the idea but the prompt did not lock the parts it tends to invent: identity, time order, screen direction, props, and scene continuity.</span></p>
+        <ul>
+          <li><span class="zh-p">每張參考圖是否有明確用途？不要只寫 use the images。</span><span class="en-p">Does each reference image have a clear role? Do not only write "use the images."</span></li>
+          <li><span class="zh-p">每格是否只有一個主要動作？太多動作會讓影片模型亂補。</span><span class="en-p">Does each panel contain one main action? Too many actions invite random motion.</span></li>
+          <li><span class="zh-p">是否有寫角色、服裝、產品、場景不能變？</span><span class="en-p">Did you lock character, outfit, product, and scene consistency?</span></li>
+          <li><span class="zh-p">Seedance 是否有時間軸？沒有時間軸通常會變成自由發揮。</span><span class="en-p">Does the Seedance prompt include a timeline? Without one, motion becomes too free.</span></li>
+          <li><span class="zh-p">如果是對話，是否有寫畫面左右與視線方向？</span><span class="en-p">For dialogue, did you define screen side and eyelines?</span></li>
+        </ul>
+      </section>
     </div>
   </div>
 
@@ -744,6 +908,47 @@ const DB={
   grid:[
     {l:'2×2 四格',le:'2×2',v:'2x2',cols:2,rows:2},
     {l:'3×3 九格',le:'3×3',v:'3x3',cols:3,rows:3},
+    {l:'3×4 十二格',le:'3×4',v:'3x4',cols:3,rows:4},
+    {l:'4×3 十二格',le:'4×3',v:'4x3',cols:4,rows:3},
+    {l:'4×4 十六格',le:'4×4',v:'4x4',cols:4,rows:4},
+  ],
+  workflow:[
+    {l:'分鏡轉影片 Storyboard→Video',v:'storyvideo',
+     nano:'Create a cinematic storyboard-to-video reference sheet. Use sequential panels, one readable action per panel, clear panel numbers, consistent character identity, wardrobe, background layout, and lighting across the whole grid. The image should be useful as a video reference sheet, not just a pretty still',
+     gpt:'Create a structured storyboard reference intended for image-to-video generation. Each panel must show one clear action and preserve identity, wardrobe, background layout, and lighting logic.',
+     seed:'Use Image 1 as the storyboard reference. Follow panels from left to right, top to bottom. Each panel composition should appear in order.'},
+    {l:'角色表 Character Sheet',v:'charref',
+     nano:'Create a clean character reference sheet for video generation, showing front view, side view, back view, close-up face, expressions, and action poses with the same face, outfit, proportions, and color palette',
+     gpt:'Create a character reference sheet for AI video generation: front view, side view, back view, close-up face, expressions, and action poses. Keep face, outfit, proportions, and color palette consistent.',
+     seed:'Use Image 1 as the character reference. Preserve face, hairstyle, outfit, body proportion, and identity throughout the video.'},
+    {l:'動作格 Motion Sheet',v:'motionsheet',
+     nano:'Create a 4x3 motion sheet for AI video animation. Show the same character in 12 full-body poses from start to finish. Each panel shows one clear pose, consistent camera distance, neutral background, clean silhouette, same face, same outfit, same body proportion, and a smooth readable progression of movement',
+     gpt:'Create a motion sheet with sequential full-body poses. Each panel shows one pose, progressing smoothly from first pose to final pose.',
+     seed:'Use Image 1 as a motion sheet. Follow poses from left to right, top to bottom and interpolate smooth motion between them.'},
+    {l:'商品參考 Product Ref',v:'productref',
+     nano:'Create a clean product reference or product storyboard, keeping the product shape, logo, label, material, color, and package design completely unchanged',
+     gpt:'Create a clean product reference or product storyboard. Product shape, logo, label, material, color, and package design must remain unchanged.',
+     seed:'Use Image 1 as the product reference. Keep product appearance completely unchanged; camera and light may move, but the product must not redesign or morph.'},
+    {l:'對話軸線 Dialogue Axis',v:'axis',
+     nano:'Create a dialogue continuity storyboard that preserves the 180-degree line: Character A stays screen left, Character B stays screen right, eyelines stay stable, and screen direction never flips',
+     gpt:'Maintain 180-degree line continuity: Character A stays screen left, Character B stays screen right, camera stays on the same side of the dialogue axis, and eyelines remain stable.',
+     seed:'Maintain the 180-degree line and screen direction. Do not cross the axis or swap character screen positions.'},
+    {l:'UGC 手機實拍',le:'UGC Smartphone',v:'ugc',
+     nano:'Create a realistic smartphone UGC-style image, casual handheld framing, natural indoor light, imperfect authentic texture, not glossy or overly polished',
+     gpt:'Realistic casual smartphone visual reference, natural indoor light, imperfect framing, authentic texture, not overly polished.',
+     seed:'Handheld smartphone UGC video feel, subtle camera shake, natural focus shifts, realistic product or person interaction, not glossy commercial.'},
+    {l:'停格動畫 Stop Motion',v:'stopmotion',
+     nano:'Create a tactile stop-motion reference with handmade materials, locked-off tabletop composition, slight handmade imperfections, and a clear step-by-step transformation',
+     gpt:'Create a tactile stop-motion reference with handmade materials, locked-off tabletop composition, clear step-by-step transformation.',
+     seed:'Stop-motion animation feel, locked-off camera, slight handmade jitter, tactile material physics, clear progressive transformation.'},
+    {l:'API 2K Medium',le:'API 2K Medium',v:'api2k',
+     nano:'Prepare this as a production storyboard reference suitable for a 2K workflow; keep composition clean, details readable, and visual logic consistent for later video generation',
+     gpt:'Output planning: GPT Image 2 API, size 2048x1152 for 16:9 or 2048x2048 for square, quality medium as storyboard sweet spot. Verify final pixel dimensions.',
+     seed:'Use as final storyboard or reference after verifying image dimensions.'},
+    {l:'API 4K High',le:'API 4K High',v:'api4k',
+     nano:'Prepare this as a final high-resolution key visual or product frame, with precise detail, clean text or labels if needed, and stable composition for downstream video generation',
+     gpt:'Output planning: GPT Image 2 API, size 3840x2160 for 16:9, quality high for final key art or product frames. Treat high-resolution output as slower and costlier; verify dimensions.',
+     seed:'Use high-resolution reference for final video generation; preserve composition and identity.'},
   ],
   director:[
     {l:'王家衛 Wong Kar-wai',v:'wkw',nano:'Wong Kar-wai style — handheld shallow focus, saturated neon palette, 21mm lens distortion, practical light sources, step-printed motion blur, rain-wet surfaces',sig:'Wong Kar-wai style — handheld shallow focus, saturated neon palette, 21mm lens distortion, practical light sources, step-printed motion blur, rain-wet surfaces, cinematic Hong Kong night aesthetic'},
@@ -817,7 +1022,7 @@ const PRESETS={
   wkw:{director:'wkw'},
 };
 
-const MULTI_KEYS=new Set(['scene']);
+const MULTI_KEYS=new Set(['scene','workflow']);
 const S={};
 let shots=[];
 
@@ -840,6 +1045,11 @@ function switchRTab(n,btn){
   document.querySelectorAll('.section-video-only').forEach(s=>s.classList.toggle('dimmed',dimVideo));
   document.getElementById('tab-timeline').classList.toggle('tab-video-dim',dimVideo);
   if(n==='preprod' && lastPreprod) genPreprod(lastPreprod);
+}
+
+function scrollGuide(id){
+  const el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function makeGroup(gid,key,items){
@@ -871,6 +1081,9 @@ function toggle(key,item,btn,container){
     else{S[key]=item.v;container.querySelectorAll('.chip').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
   }
   build();
+  if(key==='workflow'){
+    setTimeout(build,0);
+  }
 }
 
 function gi(k){
@@ -937,7 +1150,23 @@ function build(){
 
     setOut('nano',gridPrompt);
     setOut('gpt',gridPrompt);
-    const tlSeed=[ss||null,subj||null,'',tlLines,'','No text overlays, no watermark, no jump cuts.'].filter(v=>v!==null).join('\n');
+    const tlSeed=[
+      'Use Image 1 as the storyboard reference.',
+      'Follow the storyboard sequence from left to right, top to bottom.',
+      'If additional references are uploaded: Image 2 = main character, Image 3 = environment and lighting, Image 4 = product or key prop.',
+      '',
+      'Create a 15-second cinematic video.',
+      ss?'Visual style: '+ss+'.':null,
+      subj?'Subject / scene: '+subj:null,
+      '',
+      'Timeline:',
+      tlLines,
+      '',
+      'Consistency rules:',
+      'Keep character identity, outfit, product design, background layout, lighting logic, and color palette consistent.',
+      'Do not add unrelated characters.',
+      'No morphing, flickering, extra limbs, random text, watermark, or jump cuts.'
+    ].filter(v=>v!==null).join('\n');
     setOut('seed',tlSeed);
     if(lastPreprod && document.getElementById('rpane-preprod').classList.contains('active')) genPreprod(lastPreprod);
     return;
@@ -947,10 +1176,17 @@ function build(){
   const np=[],sp=[];
   if(subj){np.push(subj);sp.push(subj);}
   const scenes=giAll('scene');
+  const workflows=giAll('workflow');
   const sc=scenes[0]||null;
   if(scenes.length){
     np.unshift(scenes.map(s=>s.nano||s.gpt).join(', '));
     sp.unshift(scenes.map(s=>s.seed).join(', '));
+  }
+  if(workflows.length){
+    workflows.forEach(w=>{
+      if(w.gpt) np.push(w.gpt);
+      if(w.seed) sp.push(w.seed);
+    });
   }
   ['camera','lens','focal','aperture','lut','light','skin'].forEach(k=>{
     const it=gi(k);
@@ -977,17 +1213,26 @@ function build(){
   function buildSeed(){
     const _sty=[];
     if(sc)_sty.push(sc.seed);
+    workflows.forEach(w=>{if(w.seed)_sty.push(w.seed);});
     ['camera','lens','focal','aperture','lut'].forEach(k=>{const it=gi(k);if(it)_sty.push(it.seed||it.gpt);});
     const _light=[];
     ['light','skin'].forEach(k=>{const it=gi(k);if(it)_light.push(it.seed||it.gpt);});
     const _comp=[];
     [gi('shotsize'),gi('angle'),gi('relation')].forEach(it=>{if(it)_comp.push(it.seed||it.gpt);});
     return [
-      _sty.length?_sty.join(', ')+'.':null,
-      [subj,..._comp].filter(Boolean).join(', ')||null,
-      _light.length?_light.join(', ')+'.':null,
+      'Use Image 1 as the primary visual reference.',
+      'If this is storyboard-to-video, follow Image 1 from left to right, top to bottom.',
+      'If additional references are uploaded: Image 2 = main character, Image 3 = environment and lighting, Image 4 = product or key prop.',
+      '',
+      _sty.length?'Visual style: '+_sty.join(', ')+'.':null,
+      [subj,..._comp].filter(Boolean).length?'Subject / scene: '+[subj,..._comp].filter(Boolean).join(', ')+'.':null,
+      _light.length?'Lighting: '+_light.join(', ')+'.':null,
       'Camera: '+mstr+'.',
-      'No text overlays, no watermark, no jump cuts.'
+      '',
+      'Consistency rules:',
+      'Keep character identity, outfit, product design, background layout, lighting logic, and color palette consistent.',
+      'Do not add unrelated characters.',
+      'No morphing, flickering, extra limbs, random text, watermark, or jump cuts.'
     ].filter(Boolean).join('\n');
   }
 
@@ -1006,6 +1251,9 @@ function build(){
   const nrel = gi('relation'); if (nrel && nrel.nano) nanoParts.push(nrel.nano);
   const nang = gi('angle'); if (nang && nang.nano) nanoParts.push(nang.nano);
   const nanoScene = scenes.length ? scenes.map(s=>s.nano||s.gpt).join(', ') : '';
+  const workflowText = workflows.length ? workflows.map(w=>w.gpt).join('\n') : '';
+  const workflowNano = workflows.length ? workflows.map(w=>w.nano||w.gpt).join(', ') : '';
+  if (workflowNano) nanoParts.push(workflowNano);
   let nanoPrompt;
   if(isGrid){
     const totalPanels = gridCols * gridRows;
@@ -1024,11 +1272,17 @@ function build(){
       (nanoScene ? ' for a ' + nanoScene : '') + '.\n' +
       rows.join('\n') + '\n' +
       'All panels share: ' + (nanoParts.length ? nanoParts.join(', ') + '.' : 'consistent lighting and color palette.') + '\n' +
+      (workflowText ? workflowText + '\n' : '') +
       'Consistent character design. Thin dark border between panels. Panel number in corner. No other text overlays.';
   } else {
-    nanoPrompt = nanoVerb + (nanoScene ? ' ' + nanoScene : '') +
-      (nanoParts.length ? '. ' + nanoParts.join(', ') : '') +
-      '. Photorealistic, natural light rendering, no watermark, no text overlay.';
+    if(workflowNano && !nanoScene && !subj){
+      nanoPrompt = workflowNano + '. Photorealistic, natural light rendering, no watermark, no text overlay.';
+    } else {
+      const nanoSubject = nanoScene ? ' ' + nanoScene : ' a cinematic visual reference';
+      nanoPrompt = nanoVerb + nanoSubject +
+        (nanoParts.length ? '. ' + nanoParts.join(', ') : '') +
+        '. Photorealistic, natural light rendering, no watermark, no text overlay.';
+    }
   }
   setOut('nano', nanoPrompt);
 
@@ -1090,6 +1344,7 @@ function build(){
   if (gptCam) styleParts.push(gptCam.gpt);
   if (gptSkin) styleParts.push(gptSkin.gpt);
   if (styleParts.length) gptLines.push(styleParts.join(', ') + '.');
+  if (workflowText) gptLines.push(workflowText);
   const constLine = 'Ultra-realistic, photorealistic, sharp clarity, no blur, no watermark, no artifacts.';
   gptLines.push(constLine);
 
@@ -1107,11 +1362,15 @@ function build(){
       }
       panelRows2.push('Row '+(r+1)+': '+rp.join(' | '));
     }
-    gptFinal = (l1?l1+'\n':'') +
+    gptFinal = 'Create a ' + gridCols + '×' + gridRows + ' cinematic storyboard grid in one single image.\n' +
+      'Use uploaded references explicitly: Image 1 = main character or visual identity, Image 2 = environment, Image 3 = product or key prop if provided.\n' +
+      (l1?'\nProject:\n'+l1+'\n':'') +
       'Grid layout: ' + gridCols + '×' + gridRows + ' storyboard (' + totalPanels2 + ' panels).\n' +
       panelRows2.join('\n') + '\n' +
       (styleDesc ? styleDesc + '.\n' : '') +
-      'All panels: consistent character, wardrobe, environment, lighting and color grade. Only action and framing change between panels.\n' +
+      (workflowText ? workflowText + '\n' : '') +
+      'All panels: consistent character identity, face, wardrobe, environment, lighting logic and color grade. Only action and framing change between panels.\n' +
+      'Each panel should show one clear action and read as a usable Seedance image-to-video reference.\n' +
       'Thin dark border between panels. Panel number label in corner. No other text overlays.\n' +
       constLine;
   } else {
@@ -1351,6 +1610,217 @@ ACTION & CONTINUITY: [Physical action — all 4 frames are ONE continuous moment
 CAMERA & COMPOSITION: [Shot types, angles, lens choices per frame]
 LIGHTING & ATMOSPHERE: ${light?light.gpt:'natural motivated lighting'}
 TONE & FINISH: ${cam?cam.gpt:'35mm film stock, cinematic color grade'}${lut?', '+lut.gpt:''}`;
+  } else if(type==='seedpack'){
+    out=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+GPT IMAGE 2 → SEEDANCE 2.0 PROMPT PACK
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+PROJECT: ${subj}
+STYLE DNA: ${styleRef||'cinematic, consistent lighting, professional film production quality'}
+
+1) GPT IMAGE 2 — STORYBOARD GRID
+
+Create a 3×3 cinematic storyboard grid in one single image.
+
+Reference roles:
+Image 1 = main character or visual identity reference.
+Image 2 = environment reference, if provided.
+Image 3 = product or key prop reference, if provided.
+
+Keep the same character identity, face, hairstyle, outfit, body proportion, color palette, environment logic, and lighting across all 9 panels.
+
+Theme:
+${subj}
+
+Panel layout:
+Row 1:
+Panel 1: WS establishing shot, introduce the world and subject.
+Panel 2: MS, subject begins the action.
+Panel 3: CU or insert, key emotional or physical detail.
+
+Row 2:
+Panel 4: tracking shot impression, action moves screen left to screen right.
+Panel 5: low angle or OTS, conflict or turning point.
+Panel 6: dynamic action shot, peak motion or reveal.
+
+Row 3:
+Panel 7: reaction shot, consequence becomes visible.
+Panel 8: slow pull-out or high angle, resolution begins.
+Panel 9: final hero shot, the strongest ending image.
+
+Visual style:
+${styleRef||cinRef}
+
+Rules:
+- One clear action per panel.
+- Thin dark border between panels.
+- Panel numbers 1–9 in the corner.
+- Small camera labels only.
+- No long captions, random text, extra characters, face change, outfit change, or background layout drift.
+
+2) SEEDANCE 2.0 — STORYBOARD TO VIDEO
+
+Use Image 1 as a 3×3 storyboard reference.
+Follow the storyboard sequence from left to right, top to bottom.
+
+If additional images are uploaded:
+Image 2 = main character reference.
+Image 3 = environment and lighting reference.
+Image 4 = product or key prop reference.
+
+Create a 15-second cinematic video.
+Each panel's composition should appear in order.
+
+Timeline:
+0–2s: panel 1, establish the scene.
+2–4s: panel 2, begin the action.
+4–6s: panel 3, close-up emotional or detail beat.
+6–8s: panel 4, camera tracks the movement.
+8–10s: panel 5, conflict or visual twist.
+10–12s: panel 6, climax.
+12–13s: panel 7, reaction shot.
+13–14s: panel 8, resolution.
+14–15s: panel 9, final hero shot.
+
+Camera style:
+${cam?cam.seed||cam.gpt:'smooth cinematic dolly, controlled handheld energy, readable shot progression'}
+
+Lighting:
+${light?light.seed||light.gpt:'consistent motivated lighting'}
+
+Motion:
+Natural body motion, readable physics, hair and cloth secondary motion, no random camera spinning.
+
+Consistency rules:
+Keep character identity, outfit, product design, background layout, lighting logic, and color palette consistent.
+Do not add unrelated characters.
+No morphing, flickering, extra limbs, random text, watermark, or jump cuts.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
+  } else if(type==='motionsheet'){
+    out=`Create a 4×3 motion sheet for AI video animation.
+
+Use the uploaded character reference image as the character identity reference.
+Keep the same face, hairstyle, outfit, body proportion, color palette, and silhouette in all 12 panels.
+
+PROJECT / ACTION:
+${subj}
+
+Style:
+${styleRef||'clean cinematic animation reference sheet, full-body poses, consistent camera angle, neutral background, readable movement'}
+
+Motion sequence:
+1. ready pose, full body, clear silhouette
+2. first weight shift
+3. arm or object begins moving
+4. body turns or leans into action
+5. low or compressed pose
+6. peak extension / jump / strike / reach
+7. landing or impact pose
+8. recovery pose
+9. reaction close to face or upper body
+10. secondary movement, cloth/hair/object follows through
+11. final step or settling motion
+12. final hero pose
+
+Layout:
+4 columns × 3 rows, small panel numbers only, no extra text.
+Neutral background.
+Consistent scale and camera distance.
+No extra characters.
+No outfit change.
+No face change.
+
+SEEDANCE USE:
+Use this motion sheet as Image 1.
+Follow poses 1–12 from left to right, top to bottom.
+Create smooth motion between each pose while preserving identity, outfit, and silhouette.`;
+  } else if(type==='dialogue180'){
+    out=`Create a 6-panel cinematic storyboard sheet for a dialogue scene.
+
+Format:
+2 rows × 3 columns.
+Each panel numbered 1 to 6.
+Small camera labels only.
+Clean professional storyboard style.
+
+Scene:
+${subj}
+
+Spatial continuity / 180-degree line:
+Character A always stays on the left side of frame.
+Character B always stays on the right side of frame.
+The dialogue axis runs between Character A and Character B.
+Keep the camera on the same side of the dialogue axis for every panel.
+Character A always looks toward screen right.
+Character B always looks toward screen left.
+Do not cross the axis.
+Do not swap their left-right positions.
+
+Panels:
+Panel 1: WS establishing two-person shot, A on left, B on right, clear geography.
+Panel 2: OTS from behind B, looking at A. A is framed left, looking screen right.
+Panel 3: matching reverse OTS from behind A, looking at B. B is framed right, looking screen left.
+Panel 4: CU reaction shot of A, A looks screen right.
+Panel 5: CU reaction shot of B, B looks screen left.
+Panel 6: WS two-person shot, same geography as panel 1.
+
+Style:
+${styleRef||cinRef}
+
+Constraints:
+Consistent room layout, table/object position, eyelines, costume, and lighting direction.
+No extra foreground characters.
+Do not flip screen direction.
+No random text except panel numbers and camera labels.
+
+SEEDANCE PROMPT:
+Use Image 1 as a 6-panel storyboard reference.
+Follow panels from left to right, top to bottom.
+Maintain the 180-degree line and screen direction throughout the video.
+Character A always stays screen left and looks screen right.
+Character B always stays screen right and looks screen left.
+Do not cross the axis or swap screen positions.
+Create an 8-second cinematic dialogue scene with stable eyelines and smooth cuts.`;
+  } else if(type==='freezeframe'){
+    out=`━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+FREEZE-FRAME ORBIT — GPT IMAGE 2 + SEEDANCE
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+1) GPT IMAGE 2 — FREEZE-FRAME STILL
+
+Cinematic freeze-frame bullet-time shot, shallow depth of field.
+${subj}
+
+The subject is caught mid-action in a visually specific location.
+Objects, liquid, fabric, debris, sparks, paper, glass, or dust launch directly toward the camera.
+Some foreground elements blur past the frame edges as if flying past the lens.
+Tiny suspended particles hang frozen in mid-air in the foreground, sharp and close, filling the frame.
+
+Camera:
+${cam?cam.gpt:'wide-angle close perspective, subject readable behind foreground debris'}
+
+Lighting:
+${light?light.gpt:'dramatic motivated light, strong foreground highlights'}
+
+Style:
+${styleRef||cinRef}
+
+2) GPT IMAGE 2 — WHITE BORDER POP-OUT VERSION
+
+Keep this photo the same, but add a plain white border around the edge of the photo.
+Keep the foreground elements visible, extending into the white border area, creating a 3D pop-out effect.
+Do not change the original photo content.
+The border should be about 10% of the image size and pure white.
+
+3) SEEDANCE 2.0 — CAMERA ORBIT
+
+Use Image 1 as the freeze-frame reference.
+Bullet-time freeze-frame effect.
+The subject and everything in the frame are frozen in time.
+The camera slowly rotates around the suspended foreground elements.
+Keep particles, liquid, debris, cloth, and subject frozen but dimensional.
+No morphing, no new objects, no identity drift, no text, no watermark.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
   } else if(type==='layers'){
     const lRef=light?light.gpt:'single practical light source, motivated direction';
     const cRef=cam?cam.gpt:'35mm anamorphic, shallow depth of field, film grain';
@@ -1387,7 +1857,7 @@ No text, no watermark, neutral background, isolated objects.
 
 ── LAYER 3 — FOREGROUND CHARACTER (Subject Isolation) ──
 Generate last. Character only on neutral background.
-API tip: set background:"transparent" to get alpha-channel PNG.
+Transparency note: GPT Image 2 API should not be assumed to support direct transparent background. Use a neutral background, then remove it with post-processing or a model/route that explicitly supports alpha output.
 
 Generate a photorealistic cinematic character still from a ${genre} film.
 CHARACTER: [name — age, build, hair, costume, expression]
@@ -1405,7 +1875,7 @@ No text, no watermark, character isolated on neutral ground.
 Stack bottom → top in Photoshop / Photopea:
   1. Layer 1 — Background (base)
   2. Layer 2 — Midground props (Normal or Multiply blend)
-  3. Layer 3 — Foreground character (remove BG via Remove.bg or API alpha)
+  3. Layer 3 — Foreground character (remove neutral BG via Remove.bg, Photoshop, Photopea, or another alpha-capable workflow)
 Match levels / color grade across all layers before final export.
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━`;
   }
@@ -1517,7 +1987,7 @@ function delSaved(i){
   saved.splice(i,1);localStorage.setItem('cpb-v6',JSON.stringify(saved));renderSaved();
 }
 
-const GM={scene:'g-scene',camera:'g-camera',lens:'g-lens',focal:'g-focal',aperture:'g-aperture',lut:'g-lut',light:'g-light',skin:'g-skin',shotsize:'g-shotsize',relation:'g-relation',angle:'g-angle',motion:'g-motion',speed:'g-speed',director:'g-director',grid:'g-grid'};
+const GM={scene:'g-scene',workflow:'g-workflow',camera:'g-camera',lens:'g-lens',focal:'g-focal',aperture:'g-aperture',lut:'g-lut',light:'g-light',skin:'g-skin',shotsize:'g-shotsize',relation:'g-relation',angle:'g-angle',motion:'g-motion',speed:'g-speed',director:'g-director',grid:'g-grid'};
 Object.entries(GM).forEach(([k,g])=>makeGroup(g,k,DB[k]));
 renderTL();renderSaved();
 document.getElementById('subject').addEventListener('input',build);
